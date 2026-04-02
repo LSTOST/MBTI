@@ -1,0 +1,6 @@
+{
+  "name": "@mbti/engine",
+  "private": true,
+  "version": "0.0.0",
+  "description": "V1 引擎实现位于 apps/web/features；后续可逐步迁移至此包。"
+}

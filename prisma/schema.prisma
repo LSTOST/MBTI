@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../apps/web/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Gender {
+  male
+  female
+  nonbinary
+  unknown
+}
+
+enum ReportRecordStatus {
+  draft
+  free_ready
+  paid_ready
+}
+
+enum OrderStatus {
+  created
+  paying
+  paid
+  fulfilled
+  expired
+  failed
+}
+
+enum PaymentChannel {
+  wechat_jsapi
+  wechat_h5
+  alipay_h5
+  mock
+}
+
+enum AiReportStatus {
+  not_started
+  processing
+  completed
+  failed
+}
+
+enum ShareType {
+  free_card
+  paid_card
+  ai_card
+}
+
+model User {
+  id           String        @id @default(cuid())
+  nickname     String
+  gender       Gender        @default(male)
+  birthDate    DateTime      @db.Date
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  lastActiveAt DateTime      @default(now())
+  reports      Report[]
+  quizAttempts QuizAttempt[]
+  shareEvents  ShareEvent[]
+}
+
+model QuizAttempt {
+  id                   String       @id @default(cuid())
+  userId               String
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               String       @default("in_progress")
+  currentQuestionIndex Int          @default(0)
+  startedAt            DateTime     @default(now())
+  completedAt          DateTime?
+  updatedAt            DateTime     @updatedAt
+  answers              QuizAnswer[]
+
+  @@index([userId, status])
+}
+
+model QuizAnswer {
+  id         String      @id @default(cuid())
+  attemptId  String
+  attempt    QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  value      Int
+  answeredAt DateTime    @default(now())
+
+  @@unique([attemptId, questionId])
+}
+
+model Report {
+  id              String             @id @default(cuid())
+  slug            String             @unique
+  userId          String
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          ReportRecordStatus @default(free_ready)
+  summary         String
+  nickname        String
+  mbtiType        String
+  sunSign         String
+  loveStyleLabel  String
+  bestMatch       Json
+  topMatches      Json
+  highRiskMatches Json
+  strengths       Json
+  conflicts       Json
+  advice          Json
+  isPremiumLocked Boolean            @default(true)
+  matchRank       Int
+  dimensionScores Json?
+  facetResult     Json?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  order           Order?
+  aiReport        AiReport?
+  shareEvents     ShareEvent[]
+}
+
+model Order {
+  id                String          @id @default(cuid())
+  reportId          String          @unique
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  amount            Int
+  currency          String          @default("CNY")
+  paymentChannel    PaymentChannel  @default(mock)
+  status            OrderStatus     @default(created)
+  thirdPartyOrderId String?
+  paidAt            DateTime?
+  expiredAt         DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([status])
+  @@index([thirdPartyOrderId])
+}
+
+model AiReport {
+  id                String           @id @default(cuid())
+  reportId          String           @unique
+  report            Report           @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  status            AiReportStatus   @default(not_started)
+  sections          Json?
+  summary           String?
+  model             String?
+  promptTokens      Int?
+  completionTokens  Int?
+  latencyMs         Int?
+  retryCount        Int              @default(0)
+  failureReason     String?
+  error             String?
+  generatedAt       DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model ShareEvent {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reportId     String
+  report       Report     @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  shareType    ShareType
+  shareChannel String
+  createdAt    DateTime   @default(now())
+
+  @@index([reportId])
+}

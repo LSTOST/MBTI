@@ -1,0 +1,10 @@
+node_modules
+.pnpm-store
+.env
+.next
+.DS_Store
+*.db
+*.db-journal
+apps/web/.env.local
+apps/web/node_modules
+
