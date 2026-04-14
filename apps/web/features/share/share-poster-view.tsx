@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useRef, useState } from "react";
 import { toBlob } from "html-to-image";
 
 import { DimensionBar } from "@/components/dimension-bar";
@@ -12,15 +13,30 @@ import { formatCompatibilityScore } from "@/lib/utils";
 
 const QR_PUBLIC_PATH = "/peibupei.com.png";
 
+const returnLinkClass =
+  "flex h-11 w-full items-center justify-center text-[13px] text-[#48484A] transition-colors active:text-[#8E8E93]";
+
+/** 客户端读 ?from=depth|ai，避免 RSC/静态缓存里 searchParams 为空导致总回到灵魂伴侣报告 */
+function ShareReturnReportLink({ pathKey }: { pathKey: string }) {
+  const sp = useSearchParams();
+  const from = sp.get("from");
+  const href = from === "depth" || from === "ai" ? `/report/${pathKey}/ai` : `/report/${pathKey}`;
+  return (
+    <Link href={href} prefetch={false} className={returnLinkClass}>
+      返回报告
+    </Link>
+  );
+}
+
 type Props = {
   reportId: string;
-  /** 对外链接优先用 slug，避免暴露内部 id 形态 */
-  linkSlug?: string;
+  /** 用于拼接 `/report/…`：slug 优先，与 getReportView 的 id/slug 双查一致 */
+  reportPathKey: string;
   report: CompatibilityReport;
 };
 
-export function SharePosterView({ reportId, linkSlug, report }: Props) {
-  const linkKey = linkSlug ?? reportId;
+export function SharePosterView({ reportId, reportPathKey, report }: Props) {
+  const pathKey = String(reportPathKey || reportId).trim() || reportId;
   const captureRef = useRef<HTMLDivElement>(null);
   const [busy, setBusy] = useState(false);
   const [hint, setHint] = useState("");
@@ -216,12 +232,15 @@ export function SharePosterView({ reportId, linkSlug, report }: Props) {
           {busy ? "正在生成海报…" : "保存海报到相册"}
         </button>
         {hint ? <p className="text-center text-[12px] leading-normal text-[#8E8E93]">{hint}</p> : null}
-        <Link
-          href={`/report/${linkKey}`}
-          className="flex h-11 w-full items-center justify-center text-[13px] text-[#48484A] transition-colors active:text-[#8E8E93]"
+        <Suspense
+          fallback={
+            <Link href={`/report/${pathKey}`} prefetch={false} className={returnLinkClass}>
+              返回报告
+            </Link>
+          }
         >
-          返回报告
-        </Link>
+          <ShareReturnReportLink pathKey={pathKey} />
+        </Suspense>
       </div>
     </main>
   );

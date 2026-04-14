@@ -436,7 +436,7 @@ export function QuizRunner({ profile }: Props) {
       window.localStorage.removeItem(progressKey);
       window.localStorage.removeItem(intakeKey);
       void fetch("/api/quiz/progress", { method: "DELETE", credentials: "include" });
-      router.push(`/result?id=${payload.report.slug}`);
+      router.push(`/report/${payload.report.slug}`);
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : "生成报告失败");
       setSubmitting(false);

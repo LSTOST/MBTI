@@ -316,6 +316,8 @@ export type ReportWhereInput = {
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
   aiReport?: Prisma.XOR<Prisma.AiReportNullableScalarRelationFilter, Prisma.AiReportWhereInput> | null
   shareEvents?: Prisma.ShareEventListRelationFilter
+  redemptionUses?: Prisma.RedemptionUseListRelationFilter
+  redeemAttempts?: Prisma.RedeemAttemptListRelationFilter
 }
 
 export type ReportOrderByWithRelationInput = {
@@ -344,6 +346,8 @@ export type ReportOrderByWithRelationInput = {
   order?: Prisma.OrderOrderByWithRelationInput
   aiReport?: Prisma.AiReportOrderByWithRelationInput
   shareEvents?: Prisma.ShareEventOrderByRelationAggregateInput
+  redemptionUses?: Prisma.RedemptionUseOrderByRelationAggregateInput
+  redeemAttempts?: Prisma.RedeemAttemptOrderByRelationAggregateInput
 }
 
 export type ReportWhereUniqueInput = Prisma.AtLeast<{
@@ -375,6 +379,8 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
   aiReport?: Prisma.XOR<Prisma.AiReportNullableScalarRelationFilter, Prisma.AiReportWhereInput> | null
   shareEvents?: Prisma.ShareEventListRelationFilter
+  redemptionUses?: Prisma.RedemptionUseListRelationFilter
+  redeemAttempts?: Prisma.RedeemAttemptListRelationFilter
 }, "id" | "slug">
 
 export type ReportOrderByWithAggregationInput = {
@@ -458,6 +464,8 @@ export type ReportCreateInput = {
   order?: Prisma.OrderCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateInput = {
@@ -485,6 +493,8 @@ export type ReportUncheckedCreateInput = {
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportUpdateInput = {
@@ -512,6 +522,8 @@ export type ReportUpdateInput = {
   order?: Prisma.OrderUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateInput = {
@@ -539,6 +551,8 @@ export type ReportUncheckedUpdateInput = {
   order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportCreateManyInput = {
@@ -783,6 +797,34 @@ export type ReportUpdateOneRequiredWithoutShareEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ReportUpdateToOneWithWhereWithoutShareEventsInput, Prisma.ReportUpdateWithoutShareEventsInput>, Prisma.ReportUncheckedUpdateWithoutShareEventsInput>
 }
 
+export type ReportCreateNestedOneWithoutRedemptionUsesInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutRedemptionUsesInput, Prisma.ReportUncheckedCreateWithoutRedemptionUsesInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutRedemptionUsesInput
+  connect?: Prisma.ReportWhereUniqueInput
+}
+
+export type ReportUpdateOneRequiredWithoutRedemptionUsesNestedInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutRedemptionUsesInput, Prisma.ReportUncheckedCreateWithoutRedemptionUsesInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutRedemptionUsesInput
+  upsert?: Prisma.ReportUpsertWithoutRedemptionUsesInput
+  connect?: Prisma.ReportWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReportUpdateToOneWithWhereWithoutRedemptionUsesInput, Prisma.ReportUpdateWithoutRedemptionUsesInput>, Prisma.ReportUncheckedUpdateWithoutRedemptionUsesInput>
+}
+
+export type ReportCreateNestedOneWithoutRedeemAttemptsInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedCreateWithoutRedeemAttemptsInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutRedeemAttemptsInput
+  connect?: Prisma.ReportWhereUniqueInput
+}
+
+export type ReportUpdateOneRequiredWithoutRedeemAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedCreateWithoutRedeemAttemptsInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutRedeemAttemptsInput
+  upsert?: Prisma.ReportUpsertWithoutRedeemAttemptsInput
+  connect?: Prisma.ReportWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReportUpdateToOneWithWhereWithoutRedeemAttemptsInput, Prisma.ReportUpdateWithoutRedeemAttemptsInput>, Prisma.ReportUncheckedUpdateWithoutRedeemAttemptsInput>
+}
+
 export type ReportCreateWithoutUserInput = {
   id?: string
   slug: string
@@ -807,6 +849,8 @@ export type ReportCreateWithoutUserInput = {
   order?: Prisma.OrderCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutUserInput = {
@@ -833,6 +877,8 @@ export type ReportUncheckedCreateWithoutUserInput = {
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutUserInput = {
@@ -912,6 +958,8 @@ export type ReportCreateWithoutOrderInput = {
   user: Prisma.UserCreateNestedOneWithoutReportsInput
   aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutOrderInput = {
@@ -938,6 +986,8 @@ export type ReportUncheckedCreateWithoutOrderInput = {
   updatedAt?: Date | string
   aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutOrderInput = {
@@ -980,6 +1030,8 @@ export type ReportUpdateWithoutOrderInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
   aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutOrderInput = {
@@ -1006,6 +1058,8 @@ export type ReportUncheckedUpdateWithoutOrderInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportCreateWithoutAiReportInput = {
@@ -1032,6 +1086,8 @@ export type ReportCreateWithoutAiReportInput = {
   user: Prisma.UserCreateNestedOneWithoutReportsInput
   order?: Prisma.OrderCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutAiReportInput = {
@@ -1058,6 +1114,8 @@ export type ReportUncheckedCreateWithoutAiReportInput = {
   updatedAt?: Date | string
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutAiReportInput = {
@@ -1100,6 +1158,8 @@ export type ReportUpdateWithoutAiReportInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
   order?: Prisma.OrderUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutAiReportInput = {
@@ -1126,6 +1186,8 @@ export type ReportUncheckedUpdateWithoutAiReportInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportCreateWithoutShareEventsInput = {
@@ -1152,6 +1214,8 @@ export type ReportCreateWithoutShareEventsInput = {
   user: Prisma.UserCreateNestedOneWithoutReportsInput
   order?: Prisma.OrderCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutShareEventsInput = {
@@ -1178,6 +1242,8 @@ export type ReportUncheckedCreateWithoutShareEventsInput = {
   updatedAt?: Date | string
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
   aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutShareEventsInput = {
@@ -1220,6 +1286,8 @@ export type ReportUpdateWithoutShareEventsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
   order?: Prisma.OrderUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutShareEventsInput = {
@@ -1246,6 +1314,264 @@ export type ReportUncheckedUpdateWithoutShareEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type ReportCreateWithoutRedemptionUsesInput = {
+  id?: string
+  slug: string
+  status?: $Enums.ReportRecordStatus
+  summary: string
+  nickname: string
+  mbtiType: string
+  sunSign: string
+  loveStyleLabel: string
+  bestMatch: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: boolean
+  matchRank: number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutReportsInput
+  order?: Prisma.OrderCreateNestedOneWithoutReportInput
+  aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
+  shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptCreateNestedManyWithoutReportInput
+}
+
+export type ReportUncheckedCreateWithoutRedemptionUsesInput = {
+  id?: string
+  slug: string
+  userId: string
+  status?: $Enums.ReportRecordStatus
+  summary: string
+  nickname: string
+  mbtiType: string
+  sunSign: string
+  loveStyleLabel: string
+  bestMatch: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: boolean
+  matchRank: number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
+  aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
+  shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedCreateNestedManyWithoutReportInput
+}
+
+export type ReportCreateOrConnectWithoutRedemptionUsesInput = {
+  where: Prisma.ReportWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReportCreateWithoutRedemptionUsesInput, Prisma.ReportUncheckedCreateWithoutRedemptionUsesInput>
+}
+
+export type ReportUpsertWithoutRedemptionUsesInput = {
+  update: Prisma.XOR<Prisma.ReportUpdateWithoutRedemptionUsesInput, Prisma.ReportUncheckedUpdateWithoutRedemptionUsesInput>
+  create: Prisma.XOR<Prisma.ReportCreateWithoutRedemptionUsesInput, Prisma.ReportUncheckedCreateWithoutRedemptionUsesInput>
+  where?: Prisma.ReportWhereInput
+}
+
+export type ReportUpdateToOneWithWhereWithoutRedemptionUsesInput = {
+  where?: Prisma.ReportWhereInput
+  data: Prisma.XOR<Prisma.ReportUpdateWithoutRedemptionUsesInput, Prisma.ReportUncheckedUpdateWithoutRedemptionUsesInput>
+}
+
+export type ReportUpdateWithoutRedemptionUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReportRecordStatusFieldUpdateOperationsInput | $Enums.ReportRecordStatus
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  mbtiType?: Prisma.StringFieldUpdateOperationsInput | string
+  sunSign?: Prisma.StringFieldUpdateOperationsInput | string
+  loveStyleLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  bestMatch?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  matchRank?: Prisma.IntFieldUpdateOperationsInput | number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
+  order?: Prisma.OrderUpdateOneWithoutReportNestedInput
+  aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
+  shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
+}
+
+export type ReportUncheckedUpdateWithoutRedemptionUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReportRecordStatusFieldUpdateOperationsInput | $Enums.ReportRecordStatus
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  mbtiType?: Prisma.StringFieldUpdateOperationsInput | string
+  sunSign?: Prisma.StringFieldUpdateOperationsInput | string
+  loveStyleLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  bestMatch?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  matchRank?: Prisma.IntFieldUpdateOperationsInput | number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
+  aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
+  shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type ReportCreateWithoutRedeemAttemptsInput = {
+  id?: string
+  slug: string
+  status?: $Enums.ReportRecordStatus
+  summary: string
+  nickname: string
+  mbtiType: string
+  sunSign: string
+  loveStyleLabel: string
+  bestMatch: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: boolean
+  matchRank: number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutReportsInput
+  order?: Prisma.OrderCreateNestedOneWithoutReportInput
+  aiReport?: Prisma.AiReportCreateNestedOneWithoutReportInput
+  shareEvents?: Prisma.ShareEventCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutReportInput
+}
+
+export type ReportUncheckedCreateWithoutRedeemAttemptsInput = {
+  id?: string
+  slug: string
+  userId: string
+  status?: $Enums.ReportRecordStatus
+  summary: string
+  nickname: string
+  mbtiType: string
+  sunSign: string
+  loveStyleLabel: string
+  bestMatch: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: boolean
+  matchRank: number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutReportInput
+  aiReport?: Prisma.AiReportUncheckedCreateNestedOneWithoutReportInput
+  shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutReportInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutReportInput
+}
+
+export type ReportCreateOrConnectWithoutRedeemAttemptsInput = {
+  where: Prisma.ReportWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReportCreateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedCreateWithoutRedeemAttemptsInput>
+}
+
+export type ReportUpsertWithoutRedeemAttemptsInput = {
+  update: Prisma.XOR<Prisma.ReportUpdateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedUpdateWithoutRedeemAttemptsInput>
+  create: Prisma.XOR<Prisma.ReportCreateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedCreateWithoutRedeemAttemptsInput>
+  where?: Prisma.ReportWhereInput
+}
+
+export type ReportUpdateToOneWithWhereWithoutRedeemAttemptsInput = {
+  where?: Prisma.ReportWhereInput
+  data: Prisma.XOR<Prisma.ReportUpdateWithoutRedeemAttemptsInput, Prisma.ReportUncheckedUpdateWithoutRedeemAttemptsInput>
+}
+
+export type ReportUpdateWithoutRedeemAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReportRecordStatusFieldUpdateOperationsInput | $Enums.ReportRecordStatus
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  mbtiType?: Prisma.StringFieldUpdateOperationsInput | string
+  sunSign?: Prisma.StringFieldUpdateOperationsInput | string
+  loveStyleLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  bestMatch?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  matchRank?: Prisma.IntFieldUpdateOperationsInput | number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
+  order?: Prisma.OrderUpdateOneWithoutReportNestedInput
+  aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
+  shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+}
+
+export type ReportUncheckedUpdateWithoutRedeemAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReportRecordStatusFieldUpdateOperationsInput | $Enums.ReportRecordStatus
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  mbtiType?: Prisma.StringFieldUpdateOperationsInput | string
+  sunSign?: Prisma.StringFieldUpdateOperationsInput | string
+  loveStyleLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  bestMatch?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  topMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  highRiskMatches?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  strengths?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  conflicts?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  advice?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  isPremiumLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  matchRank?: Prisma.IntFieldUpdateOperationsInput | number
+  dimensionScores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  facetResult?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
+  aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
+  shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportCreateManyUserInput = {
@@ -1295,6 +1621,8 @@ export type ReportUpdateWithoutUserInput = {
   order?: Prisma.OrderUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutUserInput = {
@@ -1321,6 +1649,8 @@ export type ReportUncheckedUpdateWithoutUserInput = {
   order?: Prisma.OrderUncheckedUpdateOneWithoutReportNestedInput
   aiReport?: Prisma.AiReportUncheckedUpdateOneWithoutReportNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutReportNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutReportNestedInput
+  redeemAttempts?: Prisma.RedeemAttemptUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateManyWithoutUserInput = {
@@ -1353,10 +1683,14 @@ export type ReportUncheckedUpdateManyWithoutUserInput = {
 
 export type ReportCountOutputType = {
   shareEvents: number
+  redemptionUses: number
+  redeemAttempts: number
 }
 
 export type ReportCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shareEvents?: boolean | ReportCountOutputTypeCountShareEventsArgs
+  redemptionUses?: boolean | ReportCountOutputTypeCountRedemptionUsesArgs
+  redeemAttempts?: boolean | ReportCountOutputTypeCountRedeemAttemptsArgs
 }
 
 /**
@@ -1374,6 +1708,20 @@ export type ReportCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  */
 export type ReportCountOutputTypeCountShareEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ShareEventWhereInput
+}
+
+/**
+ * ReportCountOutputType without action
+ */
+export type ReportCountOutputTypeCountRedemptionUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RedemptionUseWhereInput
+}
+
+/**
+ * ReportCountOutputType without action
+ */
+export type ReportCountOutputTypeCountRedeemAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RedeemAttemptWhereInput
 }
 
 
@@ -1403,6 +1751,8 @@ export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   order?: boolean | Prisma.Report$orderArgs<ExtArgs>
   aiReport?: boolean | Prisma.Report$aiReportArgs<ExtArgs>
   shareEvents?: boolean | Prisma.Report$shareEventsArgs<ExtArgs>
+  redemptionUses?: boolean | Prisma.Report$redemptionUsesArgs<ExtArgs>
+  redeemAttempts?: boolean | Prisma.Report$redeemAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.ReportCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["report"]>
 
@@ -1486,6 +1836,8 @@ export type ReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   order?: boolean | Prisma.Report$orderArgs<ExtArgs>
   aiReport?: boolean | Prisma.Report$aiReportArgs<ExtArgs>
   shareEvents?: boolean | Prisma.Report$shareEventsArgs<ExtArgs>
+  redemptionUses?: boolean | Prisma.Report$redemptionUsesArgs<ExtArgs>
+  redeemAttempts?: boolean | Prisma.Report$redeemAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.ReportCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ReportIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1502,6 +1854,8 @@ export type $ReportPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     order: Prisma.$OrderPayload<ExtArgs> | null
     aiReport: Prisma.$AiReportPayload<ExtArgs> | null
     shareEvents: Prisma.$ShareEventPayload<ExtArgs>[]
+    redemptionUses: Prisma.$RedemptionUsePayload<ExtArgs>[]
+    redeemAttempts: Prisma.$RedeemAttemptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1923,6 +2277,8 @@ export interface Prisma__ReportClient<T, Null = never, ExtArgs extends runtime.T
   order<T extends Prisma.Report$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   aiReport<T extends Prisma.Report$aiReportArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$aiReportArgs<ExtArgs>>): Prisma.Prisma__AiReportClient<runtime.Types.Result.GetResult<Prisma.$AiReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   shareEvents<T extends Prisma.Report$shareEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$shareEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShareEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  redemptionUses<T extends Prisma.Report$redemptionUsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$redemptionUsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RedemptionUsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  redeemAttempts<T extends Prisma.Report$redeemAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$redeemAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RedeemAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2433,6 +2789,54 @@ export type Report$shareEventsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ShareEventScalarFieldEnum | Prisma.ShareEventScalarFieldEnum[]
+}
+
+/**
+ * Report.redemptionUses
+ */
+export type Report$redemptionUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RedemptionUse
+   */
+  select?: Prisma.RedemptionUseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RedemptionUse
+   */
+  omit?: Prisma.RedemptionUseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionUseInclude<ExtArgs> | null
+  where?: Prisma.RedemptionUseWhereInput
+  orderBy?: Prisma.RedemptionUseOrderByWithRelationInput | Prisma.RedemptionUseOrderByWithRelationInput[]
+  cursor?: Prisma.RedemptionUseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RedemptionUseScalarFieldEnum | Prisma.RedemptionUseScalarFieldEnum[]
+}
+
+/**
+ * Report.redeemAttempts
+ */
+export type Report$redeemAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RedeemAttempt
+   */
+  select?: Prisma.RedeemAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RedeemAttempt
+   */
+  omit?: Prisma.RedeemAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedeemAttemptInclude<ExtArgs> | null
+  where?: Prisma.RedeemAttemptWhereInput
+  orderBy?: Prisma.RedeemAttemptOrderByWithRelationInput | Prisma.RedeemAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.RedeemAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RedeemAttemptScalarFieldEnum | Prisma.RedeemAttemptScalarFieldEnum[]
 }
 
 /**

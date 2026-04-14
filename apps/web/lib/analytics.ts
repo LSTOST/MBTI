@@ -6,6 +6,7 @@ export const analyticsEvents = {
   viewedFreeReport: "viewed_free_report",
   clickedPay: "clicked_pay",
   paidReport: "paid_report",
+  redeemedWithCode: "redeemed_with_code",
   clickedAi: "clicked_ai",
   aiCompleted: "ai_completed",
   aiFailed: "ai_failed",

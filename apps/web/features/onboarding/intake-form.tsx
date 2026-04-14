@@ -81,7 +81,6 @@ export function IntakeForm() {
   const [form, setForm] = useState<UserProfileInput>(initialForm);
   const [segs, setSegs] = useState(() => splitToSegs(initialForm.birthDate));
   const [error, setError] = useState("");
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const yearRef = useRef<HTMLInputElement>(null);
   const monthRef = useRef<HTMLInputElement>(null);
@@ -104,7 +103,7 @@ export function IntakeForm() {
   const sunSign =
     effectiveBirth && getValidBirthDate(effectiveBirth) ? getSunSign(effectiveBirth) : null;
 
-  const isComplete = Boolean(form.nickname.trim() && effectiveBirth && agreedToTerms);
+  const isComplete = Boolean(form.nickname.trim() && effectiveBirth);
 
   function updateField<K extends keyof UserProfileInput>(key: K, value: UserProfileInput[K]) {
     setForm((prev) => {
@@ -119,10 +118,6 @@ export function IntakeForm() {
     const cand = buildValidFromSegments(segs.y, segs.m, segs.d);
     if (!form.nickname.trim() || !cand) {
       setError("请填写昵称和有效出生日期。");
-      return;
-    }
-    if (!agreedToTerms) {
-      setError("请阅读并勾选同意《用户协议》和《隐私政策》。");
       return;
     }
     setError("");
@@ -328,25 +323,6 @@ export function IntakeForm() {
           </section>
 
           {error ? <p className="mt-8 text-[13px] text-[#FF453A]">{error}</p> : null}
-
-          <label className="mt-10 flex cursor-pointer items-start gap-3 text-[13px] leading-snug text-[#8E8E93]">
-            <input
-              type="checkbox"
-              checked={agreedToTerms}
-              onChange={(e) => setAgreedToTerms(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#48484A] bg-[#1A1A24] text-[#7C5CFC] focus:ring-[#7C5CFC]"
-            />
-            <span>
-              提交即表示同意
-              <Link href="/terms" className="text-[#7C5CFC] underline-offset-2 hover:underline">
-                《用户协议》
-              </Link>
-              和
-              <Link href="/privacy" className="text-[#7C5CFC] underline-offset-2 hover:underline">
-                《隐私政策》
-              </Link>
-            </span>
-          </label>
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 z-10 mx-auto max-w-[428px] bg-gradient-to-t from-[#0A0A0F] via-[#0A0A0F] to-transparent px-6 pb-[calc(env(safe-area-inset-bottom,12px)+12px)] pt-4">

@@ -1,12 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import { AnimatedNumber } from "@/components/animated-number";
 import { DimensionBar } from "@/components/dimension-bar";
 import { HeroAurora } from "@/components/hero-aurora";
 import { Reveal, ScaleIn } from "@/components/reveal";
 import { SoulmateReveal } from "@/components/soulmate-reveal";
-import { getReportView } from "@/features/report/repository";
+import { getReportRecord, getReportView } from "@/features/report/repository";
 import { ReportActions } from "@/features/report/report-actions";
 import { ScrollToReportSection } from "@/features/report/scroll-to-report-section";
 import type { FacetScoreItem, MbtiDimensionKey, MatchItem } from "@/lib/types";
@@ -16,16 +17,30 @@ type Props = {
   params: Promise<{ reportId: string }>;
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { reportId } = await params;
+  const rec = await getReportRecord(reportId);
+  if (!rec) return {};
+  const bm = rec.bestMatch;
+  const z = bm.zodiac ? ` · ${bm.zodiac}` : "";
+  const desc = `我的最佳匹配是 ${bm.mbti}${z}，来测测你的`;
+  return {
+    title: `我是 ${rec.mbtiType} | ${rec.loveStyleLabel} · 灵魂伴侣报告`,
+    description: desc,
+    openGraph: {
+      title: `我是 ${rec.mbtiType} | ${rec.loveStyleLabel} · 灵魂伴侣报告`,
+      description: desc,
+      type: "article",
+    },
+  };
+}
+
 export default async function ReportPage({ params }: Props) {
   const { reportId } = await params;
   const view = await getReportView(reportId);
 
   if (!view) {
     notFound();
-  }
-
-  if (!view.hasPaid) {
-    redirect(`/result?id=${reportId}`);
   }
 
   const report = view.ruleReport;
@@ -54,7 +69,7 @@ export default async function ReportPage({ params }: Props) {
           </svg>
         </Link>
         <Link
-          href={`/share/${reportId}`}
+          href={`/share/${reportId}?from=rule`}
           aria-label="分享海报"
           className="flex min-h-11 min-w-11 items-center justify-center text-[#8E8E93] transition-colors active:text-[#F5F5F7]"
         >
@@ -72,11 +87,12 @@ export default async function ReportPage({ params }: Props) {
         </Link>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="relative flex h-svh flex-col items-center">
+      {/* ── Hero ──
+          高度 = 视口减去页眉，使贴底提示落在首屏可见区（页眉 + h-svh 会把提示顶到第二屏以下） */}
+      <section className="relative flex h-[calc(100svh-(max(0.5rem,env(safe-area-inset-top,0px))+2.75rem+0.5rem))] flex-col items-center overflow-hidden">
         <HeroAurora />
 
-        <div className="relative z-10 flex flex-1 flex-col items-center px-6 pt-6">
+        <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col items-center overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] pt-6">
           {/* Wave 1 (delay=0): 页眉 + 「你」胶囊 */}
           <ScaleIn playAfterMount className="flex flex-col items-center text-center">
             <p className="text-[11px] font-normal tracking-[0.3em] text-[#8E8E93] uppercase">
@@ -134,14 +150,15 @@ export default async function ReportPage({ params }: Props) {
           )}
         </div>
 
-        <ScaleIn playAfterMount className="relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+12px)]" delay={0.8}>
+        {/* 不用 ScaleIn：避免 playAfterMount + delay 首帧长时间透明；提示仅作引导无需进场动画 */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center bg-gradient-to-t from-[#0A0A0F] from-40% to-transparent pb-[calc(env(safe-area-inset-bottom,0px)+12px)] pt-8">
           <div className="flex flex-col items-center gap-1 text-[11px] text-[#48484A]">
             <span>向下滑动</span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="animate-bounce">
               <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </div>
-        </ScaleIn>
+        </div>
       </section>
 
       {/* ── Module 01: 关系优势 ── */}
@@ -277,18 +294,20 @@ export default async function ReportPage({ params }: Props) {
           )}
         </section>
 
-      {/* ── 底部操作区：未进阶且仍锁定时不展示付费解锁，主路径在上方进阶 ── */}
-      <section className="bg-[#0A0A0F] px-6 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-4">
-        {view.aiAnalysisStatus === "failed" && (
-          <p className="mb-3 text-center text-[12px] text-[#48484A]">上次生成失败，请重试</p>
-        )}
-        <ReportActions
-          reportId={reportId}
-          aiStatus={view.aiAnalysisStatus}
-          showLockedPayCta={view.aiAnalysisStatus !== "locked" || !!view.facetResult}
-          advancedCompleteForPaywall={!!view.facetResult}
-        />
-      </section>
+      {/* ── 底部：仅进阶完成后展示解锁/生成深度报告（与模块 06 主路径一致） ── */}
+      {view.facetResult ? (
+        <section className="bg-[#0A0A0F] px-6 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-4">
+          {view.aiAnalysisStatus === "failed" && (
+            <p className="mb-3 text-center text-[12px] text-[#48484A]">上次生成失败，请重试</p>
+          )}
+          <ReportActions
+            reportId={reportId}
+            aiStatus={view.aiAnalysisStatus}
+            showLockedPayCta
+            advancedCompleteForPaywall
+          />
+        </section>
+      ) : null}
     </main>
   );
 }

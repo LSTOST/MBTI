@@ -52,3 +52,18 @@ export type AiReport = Prisma.AiReportModel
  * 
  */
 export type ShareEvent = Prisma.ShareEventModel
+/**
+ * Model RedemptionCode
+ * 兑换码（后台可配置：总可兑次数、有效期、启用状态）
+ */
+export type RedemptionCode = Prisma.RedemptionCodeModel
+/**
+ * Model RedemptionUse
+ * 某次兑换核销记录（审计；同报告仅能通过解锁流程消费一次）
+ */
+export type RedemptionUse = Prisma.RedemptionUseModel
+/**
+ * Model RedeemAttempt
+ * 兑换接口防刷：按报告维度限流
+ */
+export type RedeemAttempt = Prisma.RedeemAttemptModel

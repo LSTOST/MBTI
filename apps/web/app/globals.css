@@ -649,6 +649,35 @@
   }
 }
 
+@keyframes redeem-generate-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.redeem-generate-progress-track {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #1a1a24;
+}
+
+.redeem-generate-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 42%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #5c3fd4, #7c5cfc);
+  animation: redeem-generate-indeterminate 1.35s ease-in-out infinite;
+}
+
 /* /calculating — keyframes 放在全局，避免 Client 组件内 styled-jsx 未注入导致 animation 无效 */
 @keyframes constellation-twinkle {
   0%,
@@ -822,5 +851,49 @@
   }
   100% {
     transform: translateX(100%);
+  }
+}
+
+/* 深度报告：导出 PDF 时临时切换为白底，便于 html2canvas */
+.ai-pdf-capture-mode {
+  background-color: #ffffff !important;
+}
+.ai-pdf-capture-mode .ai-depth-section,
+.ai-pdf-capture-mode .ai-depth-hero {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+}
+.ai-pdf-capture-mode .ai-depth-text {
+  color: #333333 !important;
+}
+.ai-pdf-capture-mode .ai-depth-muted {
+  color: #555555 !important;
+}
+.ai-pdf-capture-mode .ai-depth-accent {
+  color: #5b21b6 !important;
+}
+.ai-pdf-capture-mode .ai-depth-border {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+.ai-pdf-capture-mode h1,
+.ai-pdf-capture-mode h2 {
+  color: #111111 !important;
+}
+.ai-pdf-capture-mode blockquote {
+  border-left-color: #5b21b6 !important;
+}
+
+@media print {
+  .ai-depth-print-root,
+  .ai-depth-print-root .ai-depth-section,
+  .ai-depth-print-root .ai-depth-hero {
+    background: #fff !important;
+    color: #1a1a1a !important;
+  }
+  .ai-depth-print-root .ai-depth-text {
+    color: #333 !important;
+  }
+  .ai-depth-print-root .ai-depth-muted {
+    color: #555 !important;
   }
 }

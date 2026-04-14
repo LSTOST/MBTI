@@ -11,65 +11,65 @@ export default async function LandingPage() {
 
   return (
     <main className="relative mx-auto flex w-full max-w-[428px] flex-col bg-[#0A0A0F]">
-      <div className="flex h-svh flex-col overflow-hidden">
-        <section className="relative z-0 h-[min(48svh,340px)] w-full shrink-0">
+      <div className="flex h-svh min-h-0 flex-col overflow-hidden">
+        <section className="relative z-0 h-[min(42svh,300px)] w-full shrink-0 sm:h-[min(44svh,320px)]">
           <HeroVisual />
         </section>
 
-        <section className="relative -mt-12 z-10 flex flex-1 flex-col items-center px-6">
-          {/* 标题区 */}
-          <header className="flex w-full max-w-[340px] shrink-0 flex-col items-center">
-            <h1 className="flex w-full flex-col items-center gap-3 text-center text-balance">
-              <span className="text-[15px] font-medium leading-[1.55] tracking-[0.08em] text-[#8E8E93]">
-                测出你的
-              </span>
-              <span className="font-display text-[36px] font-bold leading-[1.2] tracking-[-0.02em] text-[#F5F5F7]">
-                灵魂伴侣
-              </span>
-            </h1>
+        <section className="relative z-10 -mt-11 flex min-h-0 flex-1 flex-col items-center px-6 sm:-mt-[3.25rem]">
+          {/*
+            双 flex-1 弹簧：标题上下均分留白，整体落在首屏纵向更靠中的位置，避免大块空白全堆在副文案与按钮之间；
+            主操作区仍固定在列底，兼顾拇指热区。
+          */}
+          <div className="flex min-h-0 w-full max-w-[340px] flex-1 flex-col">
+            <div className="min-h-0 flex-1" aria-hidden />
+            <header className="flex shrink-0 flex-col items-center">
+              <h1 className="flex w-full flex-col items-center gap-2.5 text-center text-balance">
+                <span className="text-[15px] font-medium leading-[1.55] tracking-[0.08em] text-[#8E8E93]">
+                  测出你的
+                </span>
+                <span className="font-display text-[36px] font-bold leading-[1.2] tracking-[-0.02em] text-[#F5F5F7]">
+                  灵魂伴侣
+                </span>
+              </h1>
 
-            <p className="mt-10 w-full max-w-[300px] text-center text-balance">
-              <span className="mb-4 block text-[11px] font-medium leading-[1.5] tracking-[0.14em] text-[#7C5CFC]">
-                MBTI × 星座
-              </span>
-              <span className="block text-[15px] font-normal leading-[1.9] text-[#8E8E93]">
-                你最容易对谁心动，又适合和谁走得久
-              </span>
-            </p>
-          </header>
+              <p className="mt-6 w-full max-w-[300px] text-center text-balance">
+                <span className="mb-3 block text-[11px] font-medium leading-[1.5] tracking-[0.14em] text-[#7C5CFC]">
+                  MBTI × 星座
+                </span>
+                <span className="block text-[15px] font-normal leading-[1.75] text-[#8E8E93]">
+                  你最容易对谁心动，又适合和谁走得久远
+                </span>
+              </p>
+            </header>
+            <div className="min-h-0 flex-1" aria-hidden />
 
-          <div className="min-h-6 flex-1" />
-
-          {/* CTA 区 */}
-          <div className="flex w-full shrink-0 flex-col items-center">
-            <Link
-              href="/start"
-              className="inline-flex h-[56px] w-full max-w-[311px] items-center justify-center rounded-[24px] bg-[#7C5CFC] text-[17px] font-semibold text-[#F5F5F7] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C5CFC] active:scale-[0.98]"
-              style={{ boxShadow: "0 0 24px rgba(124, 92, 252, 0.25)" }}
-            >
-              开始测试
-            </Link>
-            <p className="mt-5 text-center text-[12px] leading-[1.6] text-[#48484A]">已有 12,580 人完成测试</p>
+            <div className="shrink-0 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] pt-2">
+              <div className="flex w-full flex-col items-center">
+                <Link
+                  href="/start"
+                  className="inline-flex h-[56px] w-full max-w-[311px] items-center justify-center rounded-[24px] bg-[#7C5CFC] text-[17px] font-semibold text-[#F5F5F7] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C5CFC] active:scale-[0.98]"
+                  style={{ boxShadow: "0 0 24px rgba(124, 92, 252, 0.25)" }}
+                >
+                  开始测试
+                </Link>
+                <p className="mt-3.5 text-center text-[12px] leading-[1.6] text-[#48484A]">
+                  已有 12,580 人完成测试
+                </p>
+                {reports.length > 0 ? (
+                  <a
+                    href="#history"
+                    className="mt-5 flex items-center gap-1 text-[13px] leading-normal text-[#8E8E93] transition-colors active:text-[#F5F5F7]"
+                  >
+                    <span>查看历史记录</span>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="translate-y-px">
+                      <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </a>
+                ) : null}
+              </div>
+            </div>
           </div>
-
-          <div className="min-h-6 flex-1" />
-
-          {reports.length > 0 ? (
-            <a
-              href="#history"
-              className="shrink-0 flex items-center gap-1 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] text-[13px] leading-normal text-[#8E8E93] transition-colors active:text-[#F5F5F7]"
-            >
-              <span>查看历史记录</span>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="translate-y-px">
-                <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </a>
-          ) : (
-            <div
-              className="shrink-0 w-full pb-[calc(env(safe-area-inset-bottom,0px)+16px)]"
-              aria-hidden
-            />
-          )}
         </section>
       </div>
 

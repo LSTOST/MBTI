@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { createPaymentIntent } from "@/features/report/repository";
 import { getEnv } from "@/lib/env";
+import { getPublicUnlockMode } from "@/lib/unlock-mode";
 
 type Context = { params: Promise<{ reportId: string }> };
 
@@ -12,6 +13,10 @@ const bodySchema = z.object({
 
 /** PRD：创建预支付订单，返回 orderId 供轮询与回调关联 */
 export async function POST(request: Request, context: Context) {
+  if (getPublicUnlockMode() !== "payment") {
+    return NextResponse.json({ error: "当前未开启支付解锁" }, { status: 403 });
+  }
+
   const { reportId } = await context.params;
   const env = getEnv();
   const json = await request.json().catch(() => ({}));

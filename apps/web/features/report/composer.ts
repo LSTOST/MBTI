@@ -24,7 +24,7 @@ export function unlockReport(report: CompatibilityReport): CompatibilityReport {
   };
 }
 
-/** PRD 9.5：免费基础结果可展示字段；完整规则模块在付费后通过 unlockReport 释放 */
+/** PRD 9.5：免费基础结果可展示字段；完整灵魂伴侣报告模块在付费后通过 unlockReport 释放 */
 export function toLockedPublicReport(report: CompatibilityReport): CompatibilityReport {
   return {
     ...report,

@@ -57,7 +57,10 @@ export const ModelName = {
   Report: 'Report',
   Order: 'Order',
   AiReport: 'AiReport',
-  ShareEvent: 'ShareEvent'
+  ShareEvent: 'ShareEvent',
+  RedemptionCode: 'RedemptionCode',
+  RedemptionUse: 'RedemptionUse',
+  RedeemAttempt: 'RedeemAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -188,6 +191,41 @@ export const ShareEventScalarFieldEnum = {
 } as const
 
 export type ShareEventScalarFieldEnum = (typeof ShareEventScalarFieldEnum)[keyof typeof ShareEventScalarFieldEnum]
+
+
+export const RedemptionCodeScalarFieldEnum = {
+  id: 'id',
+  codeNormalized: 'codeNormalized',
+  note: 'note',
+  maxRedemptions: 'maxRedemptions',
+  redemptionCount: 'redemptionCount',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RedemptionCodeScalarFieldEnum = (typeof RedemptionCodeScalarFieldEnum)[keyof typeof RedemptionCodeScalarFieldEnum]
+
+
+export const RedemptionUseScalarFieldEnum = {
+  id: 'id',
+  codeId: 'codeId',
+  reportId: 'reportId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type RedemptionUseScalarFieldEnum = (typeof RedemptionUseScalarFieldEnum)[keyof typeof RedemptionUseScalarFieldEnum]
+
+
+export const RedeemAttemptScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  createdAt: 'createdAt'
+} as const
+
+export type RedeemAttemptScalarFieldEnum = (typeof RedeemAttemptScalarFieldEnum)[keyof typeof RedeemAttemptScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -34,6 +34,7 @@ enum PaymentChannel {
   wechat_h5
   alipay_h5
   mock
+  redeem
 }
 
 enum AiReportStatus {
@@ -50,16 +51,17 @@ enum ShareType {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  nickname     String
-  gender       Gender        @default(male)
-  birthDate    DateTime      @db.Date
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  lastActiveAt DateTime      @default(now())
-  reports      Report[]
-  quizAttempts QuizAttempt[]
-  shareEvents  ShareEvent[]
+  id               String           @id @default(cuid())
+  nickname         String
+  gender           Gender           @default(male)
+  birthDate        DateTime         @db.Date
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  lastActiveAt     DateTime         @default(now())
+  reports          Report[]
+  quizAttempts     QuizAttempt[]
+  shareEvents      ShareEvent[]
+  redemptionUses   RedemptionUse[]
 }
 
 model QuizAttempt {
@@ -113,6 +115,8 @@ model Report {
   order           Order?
   aiReport        AiReport?
   shareEvents     ShareEvent[]
+  redemptionUses  RedemptionUse[]
+  redeemAttempts  RedeemAttempt[]
 }
 
 model Order {
@@ -163,4 +167,43 @@ model ShareEvent {
   createdAt    DateTime   @default(now())
 
   @@index([reportId])
+}
+
+/// 兑换码（后台可配置：总可兑次数、有效期、启用状态）
+model RedemptionCode {
+  id               String           @id @default(cuid())
+  codeNormalized   String           @unique
+  note             String?
+  maxRedemptions   Int              @default(1)
+  redemptionCount  Int              @default(0)
+  expiresAt        DateTime?
+  active           Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  uses             RedemptionUse[]
+}
+
+/// 某次兑换核销记录（审计；同报告仅能通过解锁流程消费一次）
+model RedemptionUse {
+  id        String         @id @default(cuid())
+  codeId    String
+  code      RedemptionCode @relation(fields: [codeId], references: [id], onDelete: Restrict)
+  reportId  String
+  report    Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@index([codeId])
+  @@index([reportId])
+}
+
+/// 兑换接口防刷：按报告维度限流
+model RedeemAttempt {
+  id        String   @id @default(cuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([reportId, createdAt])
 }

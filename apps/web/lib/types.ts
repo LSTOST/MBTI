@@ -110,6 +110,8 @@ export type AiAnalysisRequest = {
   reportId: string;
   userProfileSummary: string;
   compatibilitySummary: string;
+  /** 灵魂伴侣报告展开（优势/冲突/高热匹配等），供模型引用 */
+  structuredContext: string;
   tonePreset: AiTonePreset;
   language: "zh-CN";
 };
@@ -117,7 +119,11 @@ export type AiAnalysisRequest = {
 export type AiAnalysisSection = {
   key: string;
   title: string;
+  /** 正文：可多段，用 \\n\\n 分段 */
   content: string;
+  bullets?: string[];
+  /** 沟通/场景示例（单段） */
+  example?: string;
 };
 
 export type AiAnalysisResult = {
@@ -132,7 +138,9 @@ export type AiAnalysisResult = {
 
 export type PaidReportView = {
   ruleReport: CompatibilityReport;
-  /** 已核销支付订单，可查看完整规则报告（PRD 9.6） */
+  /** 报告创建时写入的昵称（与 ruleReport 同源，便于深度报告等页展示） */
+  nickname: string;
+  /** 已核销支付订单，可查看完整灵魂伴侣报告（PRD 9.6） */
   hasPaid: boolean;
   aiAnalysisStatus:
     | "locked"

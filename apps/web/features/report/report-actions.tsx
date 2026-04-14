@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { UnlockDeepReportModal } from "@/features/report/unlock-deep-report-modal";
+import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { pollPaymentOrderPaid } from "@/lib/payment-poll";
+import { getPublicUnlockMode } from "@/lib/unlock-mode";
 
 type Props = {
   reportId: string;
@@ -19,6 +20,12 @@ type Props = {
 
 const primaryBtn =
   "flex h-[56px] w-full items-center justify-center rounded-[24px] bg-[#7C5CFC] text-[17px] font-semibold text-[#F5F5F7] shadow-[0_0_24px_rgba(124,92,252,0.25)] transition-transform active:scale-[0.98] disabled:opacity-60";
+
+/** 与 quiz-runner 主按钮下的「返回首页」一致 */
+const homeLink =
+  "text-center text-[14px] text-[#48484A] underline-offset-4 hover:text-[#8E8E93]";
+
+const unlockMode = getPublicUnlockMode();
 
 export function ReportActions({
   reportId,
@@ -123,22 +130,45 @@ export function ReportActions({
           >
             解锁深度报告
           </button>
-          <UnlockDeepReportModal
-            open={paywallOpen}
-            onClose={() => {
-              setPaywallOpen(false);
-              setError("");
-            }}
-            paying={paying}
-            onUnlock={() => void unlockAndGenerateAi()}
-            error={error || undefined}
-            advancedComplete={advancedCompleteForPaywall}
-          />
+          {unlockMode === "payment" ? (
+            <UnlockDeepReportModal
+              mode="payment"
+              open={paywallOpen}
+              onClose={() => {
+                setPaywallOpen(false);
+                setError("");
+              }}
+              paying={paying}
+              onPaymentUnlock={() => void unlockAndGenerateAi()}
+              error={error || undefined}
+              advancedComplete={advancedCompleteForPaywall}
+            />
+          ) : (
+            <UnlockDeepReportModal
+              mode="redeem"
+              open={paywallOpen}
+              onClose={() => setPaywallOpen(false)}
+              reportId={reportId}
+              onRedeemSuccess={() => {
+                trackEvent(analyticsEvents.redeemedWithCode, { reportId });
+                trackEvent(analyticsEvents.aiCompleted, { reportId });
+                router.push(`/report/${reportId}/ai`);
+                router.refresh();
+                setPaywallOpen(false);
+              }}
+            />
+          )}
         </>
       ) : aiStatus === "locked" ? null : aiStatus === "completed" ? (
-        <Link href={`/report/${reportId}/ai`} className={primaryBtn}>
-          查看深度报告
-        </Link>
+        <>
+          <Link href={`/report/${reportId}/ai`} className={primaryBtn}>
+            查看深度报告
+          </Link>
+          <Link href="/" className={homeLink}>
+            {"< "}
+            返回首页
+          </Link>
+        </>
       ) : aiStatus === "failed" ? (
         <button type="button" onClick={generateAi} disabled={pending} className={primaryBtn}>
           {pending ? "正在生成…" : "重试生成深度报告"}

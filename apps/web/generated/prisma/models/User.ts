@@ -201,6 +201,7 @@ export type UserWhereInput = {
   reports?: Prisma.ReportListRelationFilter
   quizAttempts?: Prisma.QuizAttemptListRelationFilter
   shareEvents?: Prisma.ShareEventListRelationFilter
+  redemptionUses?: Prisma.RedemptionUseListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -214,6 +215,7 @@ export type UserOrderByWithRelationInput = {
   reports?: Prisma.ReportOrderByRelationAggregateInput
   quizAttempts?: Prisma.QuizAttemptOrderByRelationAggregateInput
   shareEvents?: Prisma.ShareEventOrderByRelationAggregateInput
+  redemptionUses?: Prisma.RedemptionUseOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -230,6 +232,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reports?: Prisma.ReportListRelationFilter
   quizAttempts?: Prisma.QuizAttemptListRelationFilter
   shareEvents?: Prisma.ShareEventListRelationFilter
+  redemptionUses?: Prisma.RedemptionUseListRelationFilter
 }, "id">
 
 export type UserOrderByWithAggregationInput = {
@@ -269,6 +272,7 @@ export type UserCreateInput = {
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -282,6 +286,7 @@ export type UserUncheckedCreateInput = {
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -295,6 +300,7 @@ export type UserUpdateInput = {
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -308,6 +314,7 @@ export type UserUncheckedUpdateInput = {
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -429,6 +436,20 @@ export type UserUpdateOneRequiredWithoutShareEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutShareEventsInput, Prisma.UserUpdateWithoutShareEventsInput>, Prisma.UserUncheckedUpdateWithoutShareEventsInput>
 }
 
+export type UserCreateNestedOneWithoutRedemptionUsesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRedemptionUsesInput, Prisma.UserUncheckedCreateWithoutRedemptionUsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRedemptionUsesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRedemptionUsesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRedemptionUsesInput, Prisma.UserUncheckedCreateWithoutRedemptionUsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRedemptionUsesInput
+  upsert?: Prisma.UserUpsertWithoutRedemptionUsesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRedemptionUsesInput, Prisma.UserUpdateWithoutRedemptionUsesInput>, Prisma.UserUncheckedUpdateWithoutRedemptionUsesInput>
+}
+
 export type UserCreateWithoutQuizAttemptsInput = {
   id?: string
   nickname: string
@@ -439,6 +460,7 @@ export type UserCreateWithoutQuizAttemptsInput = {
   lastActiveAt?: Date | string
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutQuizAttemptsInput = {
@@ -451,6 +473,7 @@ export type UserUncheckedCreateWithoutQuizAttemptsInput = {
   lastActiveAt?: Date | string
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutQuizAttemptsInput = {
@@ -479,6 +502,7 @@ export type UserUpdateWithoutQuizAttemptsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
@@ -491,6 +515,7 @@ export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -503,6 +528,7 @@ export type UserCreateWithoutReportsInput = {
   lastActiveAt?: Date | string
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -515,6 +541,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   lastActiveAt?: Date | string
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -543,6 +570,7 @@ export type UserUpdateWithoutReportsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -555,6 +583,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutShareEventsInput = {
@@ -567,6 +596,7 @@ export type UserCreateWithoutShareEventsInput = {
   lastActiveAt?: Date | string
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutShareEventsInput = {
@@ -579,6 +609,7 @@ export type UserUncheckedCreateWithoutShareEventsInput = {
   lastActiveAt?: Date | string
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutShareEventsInput = {
@@ -607,6 +638,7 @@ export type UserUpdateWithoutShareEventsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutShareEventsInput = {
@@ -619,6 +651,75 @@ export type UserUncheckedUpdateWithoutShareEventsInput = {
   lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  redemptionUses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRedemptionUsesInput = {
+  id?: string
+  nickname: string
+  gender?: $Enums.Gender
+  birthDate: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastActiveAt?: Date | string
+  reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  shareEvents?: Prisma.ShareEventCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRedemptionUsesInput = {
+  id?: string
+  nickname: string
+  gender?: $Enums.Gender
+  birthDate: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastActiveAt?: Date | string
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  shareEvents?: Prisma.ShareEventUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRedemptionUsesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRedemptionUsesInput, Prisma.UserUncheckedCreateWithoutRedemptionUsesInput>
+}
+
+export type UserUpsertWithoutRedemptionUsesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRedemptionUsesInput, Prisma.UserUncheckedUpdateWithoutRedemptionUsesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRedemptionUsesInput, Prisma.UserUncheckedCreateWithoutRedemptionUsesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRedemptionUsesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRedemptionUsesInput, Prisma.UserUncheckedUpdateWithoutRedemptionUsesInput>
+}
+
+export type UserUpdateWithoutRedemptionUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  shareEvents?: Prisma.ShareEventUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRedemptionUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  shareEvents?: Prisma.ShareEventUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -630,12 +731,14 @@ export type UserCountOutputType = {
   reports: number
   quizAttempts: number
   shareEvents: number
+  redemptionUses: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reports?: boolean | UserCountOutputTypeCountReportsArgs
   quizAttempts?: boolean | UserCountOutputTypeCountQuizAttemptsArgs
   shareEvents?: boolean | UserCountOutputTypeCountShareEventsArgs
+  redemptionUses?: boolean | UserCountOutputTypeCountRedemptionUsesArgs
 }
 
 /**
@@ -669,6 +772,13 @@ export type UserCountOutputTypeCountShareEventsArgs<ExtArgs extends runtime.Type
   where?: Prisma.ShareEventWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRedemptionUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RedemptionUseWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -681,6 +791,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
   quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
   shareEvents?: boolean | Prisma.User$shareEventsArgs<ExtArgs>
+  redemptionUses?: boolean | Prisma.User$redemptionUsesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -719,6 +830,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
   quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
   shareEvents?: boolean | Prisma.User$shareEventsArgs<ExtArgs>
+  redemptionUses?: boolean | Prisma.User$redemptionUsesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -730,6 +842,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reports: Prisma.$ReportPayload<ExtArgs>[]
     quizAttempts: Prisma.$QuizAttemptPayload<ExtArgs>[]
     shareEvents: Prisma.$ShareEventPayload<ExtArgs>[]
+    redemptionUses: Prisma.$RedemptionUsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1136,6 +1249,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reports<T extends Prisma.User$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   quizAttempts<T extends Prisma.User$quizAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quizAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuizAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shareEvents<T extends Prisma.User$shareEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shareEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShareEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  redemptionUses<T extends Prisma.User$redemptionUsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$redemptionUsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RedemptionUsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1634,6 +1748,30 @@ export type User$shareEventsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ShareEventScalarFieldEnum | Prisma.ShareEventScalarFieldEnum[]
+}
+
+/**
+ * User.redemptionUses
+ */
+export type User$redemptionUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RedemptionUse
+   */
+  select?: Prisma.RedemptionUseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RedemptionUse
+   */
+  omit?: Prisma.RedemptionUseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionUseInclude<ExtArgs> | null
+  where?: Prisma.RedemptionUseWhereInput
+  orderBy?: Prisma.RedemptionUseOrderByWithRelationInput | Prisma.RedemptionUseOrderByWithRelationInput[]
+  cursor?: Prisma.RedemptionUseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RedemptionUseScalarFieldEnum | Prisma.RedemptionUseScalarFieldEnum[]
 }
 
 /**

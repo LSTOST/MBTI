@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_SC } from "next/font/google";
 
-import { PrivacyConsentGate } from "@/components/privacy-consent-gate";
 import { UserSessionInit } from "@/components/user-session-init";
 import "./globals.css";
 
@@ -13,10 +12,10 @@ const notoSansSC = Noto_Sans_SC({
 
 export const metadata: Metadata = {
   title: "MBTI × 星座灵魂伴侣",
-  description: "MBTI × 星座：测出你的灵魂伴侣，看最容易对谁心动、又适合和谁走得久。",
+  description: "MBTI × 星座：测出你的灵魂伴侣，看最容易对谁心动、又适合和谁走得久远。",
   openGraph: {
     title: "测测你的 MBTI 灵魂伴侣",
-    description: "你最容易对谁心动？又适合和谁走得久？来测一测。",
+    description: "你最容易对谁心动？又适合和谁走得久远？来测一测。",
   },
 };
 
@@ -38,10 +37,8 @@ export default function RootLayout({
       <body
         className={`${notoSansSC.variable} font-sans antialiased bg-[#0A0A0F] text-[#F5F5F7]`}
       >
-        <PrivacyConsentGate>
-          <UserSessionInit />
-          {children}
-        </PrivacyConsentGate>
+        <UserSessionInit />
+        {children}
       </body>
     </html>
   );

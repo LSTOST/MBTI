@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { getPublicShareView } from "@/features/report/repository";
 import { SharePosterView } from "@/features/share/share-poster-view";
 
+/** 分享页依赖 URL 查询参数；避免整页被静态缓存后丢失 ?from= */
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ reportId: string }>;
 };
@@ -38,7 +41,7 @@ export default async function SharePage({ params }: Props) {
   return (
     <SharePosterView
       reportId={view.reportId}
-      linkSlug={view.slug}
+      reportPathKey={view.slug || view.reportId}
       report={view.ruleReport}
     />
   );

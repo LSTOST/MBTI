@@ -390,7 +390,10 @@ export const ModelName = {
   Report: 'Report',
   Order: 'Order',
   AiReport: 'AiReport',
-  ShareEvent: 'ShareEvent'
+  ShareEvent: 'ShareEvent',
+  RedemptionCode: 'RedemptionCode',
+  RedemptionUse: 'RedemptionUse',
+  RedeemAttempt: 'RedeemAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "quizAttempt" | "quizAnswer" | "report" | "order" | "aiReport" | "shareEvent"
+    modelProps: "user" | "quizAttempt" | "quizAnswer" | "report" | "order" | "aiReport" | "shareEvent" | "redemptionCode" | "redemptionUse" | "redeemAttempt"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +931,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RedemptionCode: {
+      payload: Prisma.$RedemptionCodePayload<ExtArgs>
+      fields: Prisma.RedemptionCodeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RedemptionCodeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RedemptionCodeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        findFirst: {
+          args: Prisma.RedemptionCodeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RedemptionCodeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        findMany: {
+          args: Prisma.RedemptionCodeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>[]
+        }
+        create: {
+          args: Prisma.RedemptionCodeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        createMany: {
+          args: Prisma.RedemptionCodeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RedemptionCodeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>[]
+        }
+        delete: {
+          args: Prisma.RedemptionCodeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        update: {
+          args: Prisma.RedemptionCodeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        deleteMany: {
+          args: Prisma.RedemptionCodeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RedemptionCodeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RedemptionCodeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>[]
+        }
+        upsert: {
+          args: Prisma.RedemptionCodeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionCodePayload>
+        }
+        aggregate: {
+          args: Prisma.RedemptionCodeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRedemptionCode>
+        }
+        groupBy: {
+          args: Prisma.RedemptionCodeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedemptionCodeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RedemptionCodeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedemptionCodeCountAggregateOutputType> | number
+        }
+      }
+    }
+    RedemptionUse: {
+      payload: Prisma.$RedemptionUsePayload<ExtArgs>
+      fields: Prisma.RedemptionUseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RedemptionUseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RedemptionUseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        findFirst: {
+          args: Prisma.RedemptionUseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RedemptionUseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        findMany: {
+          args: Prisma.RedemptionUseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>[]
+        }
+        create: {
+          args: Prisma.RedemptionUseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        createMany: {
+          args: Prisma.RedemptionUseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RedemptionUseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>[]
+        }
+        delete: {
+          args: Prisma.RedemptionUseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        update: {
+          args: Prisma.RedemptionUseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        deleteMany: {
+          args: Prisma.RedemptionUseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RedemptionUseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RedemptionUseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>[]
+        }
+        upsert: {
+          args: Prisma.RedemptionUseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedemptionUsePayload>
+        }
+        aggregate: {
+          args: Prisma.RedemptionUseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRedemptionUse>
+        }
+        groupBy: {
+          args: Prisma.RedemptionUseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedemptionUseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RedemptionUseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedemptionUseCountAggregateOutputType> | number
+        }
+      }
+    }
+    RedeemAttempt: {
+      payload: Prisma.$RedeemAttemptPayload<ExtArgs>
+      fields: Prisma.RedeemAttemptFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RedeemAttemptFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RedeemAttemptFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        findFirst: {
+          args: Prisma.RedeemAttemptFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RedeemAttemptFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        findMany: {
+          args: Prisma.RedeemAttemptFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>[]
+        }
+        create: {
+          args: Prisma.RedeemAttemptCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        createMany: {
+          args: Prisma.RedeemAttemptCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RedeemAttemptCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>[]
+        }
+        delete: {
+          args: Prisma.RedeemAttemptDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        update: {
+          args: Prisma.RedeemAttemptUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        deleteMany: {
+          args: Prisma.RedeemAttemptDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RedeemAttemptUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RedeemAttemptUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>[]
+        }
+        upsert: {
+          args: Prisma.RedeemAttemptUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RedeemAttemptPayload>
+        }
+        aggregate: {
+          args: Prisma.RedeemAttemptAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRedeemAttempt>
+        }
+        groupBy: {
+          args: Prisma.RedeemAttemptGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedeemAttemptGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RedeemAttemptCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RedeemAttemptCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1079,6 +1304,41 @@ export const ShareEventScalarFieldEnum = {
 } as const
 
 export type ShareEventScalarFieldEnum = (typeof ShareEventScalarFieldEnum)[keyof typeof ShareEventScalarFieldEnum]
+
+
+export const RedemptionCodeScalarFieldEnum = {
+  id: 'id',
+  codeNormalized: 'codeNormalized',
+  note: 'note',
+  maxRedemptions: 'maxRedemptions',
+  redemptionCount: 'redemptionCount',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RedemptionCodeScalarFieldEnum = (typeof RedemptionCodeScalarFieldEnum)[keyof typeof RedemptionCodeScalarFieldEnum]
+
+
+export const RedemptionUseScalarFieldEnum = {
+  id: 'id',
+  codeId: 'codeId',
+  reportId: 'reportId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type RedemptionUseScalarFieldEnum = (typeof RedemptionUseScalarFieldEnum)[keyof typeof RedemptionUseScalarFieldEnum]
+
+
+export const RedeemAttemptScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  createdAt: 'createdAt'
+} as const
+
+export type RedeemAttemptScalarFieldEnum = (typeof RedeemAttemptScalarFieldEnum)[keyof typeof RedeemAttemptScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1397,6 +1657,9 @@ export type GlobalOmitConfig = {
   order?: Prisma.OrderOmit
   aiReport?: Prisma.AiReportOmit
   shareEvent?: Prisma.ShareEventOmit
+  redemptionCode?: Prisma.RedemptionCodeOmit
+  redemptionUse?: Prisma.RedemptionUseOmit
+  redeemAttempt?: Prisma.RedeemAttemptOmit
 }
 
 /* Types for Logging */

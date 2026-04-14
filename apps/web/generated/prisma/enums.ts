@@ -44,7 +44,8 @@ export const PaymentChannel = {
   wechat_jsapi: 'wechat_jsapi',
   wechat_h5: 'wechat_h5',
   alipay_h5: 'alipay_h5',
-  mock: 'mock'
+  mock: 'mock',
+  redeem: 'redeem'
 } as const
 
 export type PaymentChannel = (typeof PaymentChannel)[keyof typeof PaymentChannel]

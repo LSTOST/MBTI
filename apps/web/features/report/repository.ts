@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 
-import { generateAiAnalysis } from "@/features/ai/generate-analysis";
+import { generateAiAnalysis, patchEmptyAiSectionsWithTemplate } from "@/features/ai/generate-analysis";
 import { buildCompatibilityReport, hydrateMatchDimensions } from "@/features/compatibility/rules";
 import { buildReportSummary, toLockedPublicReport, unlockReport } from "@/features/report/composer";
 import { advancedQuestions } from "@/features/quiz/advanced-questions";
@@ -8,6 +8,7 @@ import { quizQuestions } from "@/features/quiz/questions";
 import { scoreFacets, scoreMbti } from "@/features/quiz/scoring";
 import { getSunSign } from "@/features/zodiac/signs";
 import { prisma } from "@/lib/db";
+import { normalizeRedeemCode } from "@/lib/redeem-code";
 import { isUnavailableDatabaseError } from "@/lib/prisma-errors";
 import type {
   AiAnalysisResult,
@@ -30,11 +31,69 @@ function mapGender(g: UserProfileInput["gender"]): Gender {
   return g === "female" ? "female" : "male";
 }
 
+function formatMatchDimensionsLine(match: ReportRecord["bestMatch"]): string {
+  if (!match.dimensions?.length) return "";
+  return match.dimensions.map((d) => `${d.label} ${d.score}（${d.tag}）`).join(" · ");
+}
+
+function formatStructuredAiContext(report: ReportRecord, facet: FacetResult | null): string {
+  const bm = report.bestMatch;
+  const dimLine = formatMatchDimensionsLine(bm);
+
+  const facetBlock =
+    facet?.scores?.length ?
+      facet.scores
+        .filter((s) => Math.abs(s.score) >= 1)
+        .map(
+          (s) =>
+            `- ${s.label}：偏 ${s.pole} 侧（${s.leftPoleLabel}↔${s.rightPoleLabel}，得分 ${s.score > 0 ? "+" : ""}${s.score}）`,
+        )
+        .join("\n") || "（子维度整体接近中间带。）"
+    : "（用户尚未完成进阶测试，无 12 项子维度数据；请勿编造子维度结论。）";
+
+  const top = report.topMatches.slice(0, 3);
+  const risk = report.highRiskMatches.slice(0, 3);
+
+  return [
+    "## 恋爱气质标签",
+    report.loveStyleLabel,
+    "",
+    "## 契合度排名",
+    `在 ${report.matchRank} 种 MBTI×星座搭配中的排名（须与结论一致）。`,
+    "",
+    "## 最佳匹配对象",
+    `- ${bm.mbti}${bm.zodiac ? ` · ${bm.zodiac}` : ""} · 契合 ${bm.score}`,
+    dimLine ? `- 维度条：${dimLine}` : null,
+    `- 摘要：${bm.summary}`,
+    "",
+    "## 高热匹配（Top，最多 3）",
+    top.length ? top.map((m, i) => `${i + 1}. ${m.mbti}${m.zodiac ? ` ${m.zodiac}` : ""} · ${m.score} — ${m.summary}`).join("\n") : "（无）",
+    "",
+    "## 高风险吸引（最多 3）",
+    risk.length ? risk.map((m, i) => `${i + 1}. ${m.mbti}${m.zodiac ? ` ${m.zodiac}` : ""} · ${m.score} — ${m.summary}`).join("\n") : "（无）",
+    "",
+    "## 关系优势",
+    report.strengths.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+    "",
+    "## 高频冲突点",
+    report.conflicts.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+    "",
+    "## 关系建议",
+    report.advice.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+    "",
+    "## 进阶子维度（12 项，若未完成则勿写具体落点）",
+    facetBlock,
+  ]
+    .filter((line) => line != null)
+    .join("\n");
+}
+
 function buildAiRequest(
   profile: UserProfileInput,
   report: ReportRecord,
   reportId: string,
-  dimensionStrengths?: { ei: number; sn: number; tf: number; jp: number },
+  dimensionStrengths: { ei: number; sn: number; tf: number; jp: number } | undefined,
+  facet: FacetResult | null,
 ): AiAnalysisRequest {
   const strengthLine = dimensionStrengths
     ? `四维倾向强度：E/I ${dimensionStrengths.ei}% · S/N ${dimensionStrengths.sn}% · T/F ${dimensionStrengths.tf}% · J/P ${dimensionStrengths.jp}%`
@@ -42,13 +101,15 @@ function buildAiRequest(
   return {
     reportId,
     userProfileSummary: [
+      `昵称：${profile.nickname}`,
       `MBTI：${report.mbtiType}`,
       `太阳星座：${report.sunSign}`,
       strengthLine,
     ]
       .filter(Boolean)
       .join("；"),
-    compatibilitySummary: `最佳匹配为 ${report.bestMatch.mbti} + ${report.bestMatch.zodiac}。优势：${report.strengths.join("；")}。风险：${report.conflicts.join("；")}。建议：${report.advice.join("；")}`,
+    compatibilitySummary: `最佳匹配为 ${report.bestMatch.mbti} + ${report.bestMatch.zodiac ?? ""}。须与灵魂伴侣报告中列出的优势、冲突与建议一致，可展开阐释勿自相矛盾。`,
+    structuredContext: formatStructuredAiContext(report, facet),
     tonePreset: "sharp",
     language: "zh-CN",
   };
@@ -106,6 +167,58 @@ function mapAiStatusToView(
   return "failed";
 }
 
+/** 读库展示时去掉「一周缩影 / 30 天微行动」里正文与 bullets 的重复块（兼容旧版模型输出） */
+function sanitizeAiSectionContentForDisplay(section: AiAnalysisSection): AiAnalysisSection {
+  const { key, content, bullets } = section;
+  const c = typeof content === "string" ? content.trim() : "";
+
+  if (key === "week-vignette" && bullets && bullets.length === 7) {
+    const parts = c.split(/\n(?=周[一二三四五六日][：:：])/);
+    if (parts.length >= 2) {
+      const tail = parts.slice(1).join("\n");
+      const weekLineCount = tail.split(/\n/).filter((line) => /^周[一二三四五六日]/.test(line.trim())).length;
+      if (weekLineCount >= 4) {
+        const head = parts[0].trim();
+        if (head.length >= 28) {
+          return { ...section, content: head };
+        }
+        return {
+          ...section,
+          content: "下面按天给出可对照的相处小节拍，重在观察节奏与回应方式，不必逐条照搬。",
+        };
+      }
+    }
+  }
+
+  if (key === "micro-actions" && bullets && bullets.length >= 5) {
+    const paras = c.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
+    if (paras.length >= 4) {
+      const tail = paras.slice(1);
+      if (tail.length >= 3 && tail.every((p) => p.length <= 130)) {
+        return { ...section, content: paras[0] };
+      }
+    }
+  }
+
+  return section;
+}
+
+function normalizeAiSectionFromDb(entry: unknown): AiAnalysisSection {
+  if (!entry || typeof entry !== "object") {
+    return { key: "unknown", title: "", content: "" };
+  }
+  const o = entry as Record<string, unknown>;
+  const bullets = Array.isArray(o.bullets) ? o.bullets.map((x) => String(x)) : undefined;
+  const base: AiAnalysisSection = {
+    key: typeof o.key === "string" ? o.key : "legacy",
+    title: typeof o.title === "string" ? o.title : "",
+    content: typeof o.content === "string" ? o.content : "",
+    bullets,
+    example: typeof o.example === "string" ? o.example : undefined,
+  };
+  return sanitizeAiSectionContentForDisplay(base);
+}
+
 function prismaAiToResult(reportId: string, ai: NonNullable<Awaited<ReturnType<typeof prisma.aiReport.findUnique>>>): {
   status: ReturnType<typeof mapAiStatusToView>;
   result: AiAnalysisResult | null;
@@ -113,7 +226,8 @@ function prismaAiToResult(reportId: string, ai: NonNullable<Awaited<ReturnType<t
 } {
   const st = mapAiStatusToView(ai.status);
   if (ai.status === "completed" && ai.sections) {
-    const sections = ai.sections as unknown as AiAnalysisSection[];
+    const raw = Array.isArray(ai.sections) ? (ai.sections as unknown[]) : [];
+    const sections = raw.map(normalizeAiSectionFromDb);
     const result: AiAnalysisResult = {
       reportId,
       sections,
@@ -281,7 +395,16 @@ export async function getReportView(reportId: string): Promise<PaidReportView | 
 
   const fullRule = unlockReport(record);
   hydrateMatchDimensions(fullRule);
-  const ruleReport = hasPaid ? fullRule : toLockedPublicReport(fullRule);
+  /** 灵魂伴侣报告全量展示；付费仅解锁 AI 深度解读（见 hasPaid / aiAnalysisStatus） */
+  const ruleReport = fullRule;
+
+  let aiAnalysis = aiMapped.result;
+  if (aiMapped.status === "completed" && aiAnalysis?.sections?.length) {
+    aiAnalysis = {
+      ...aiAnalysis,
+      sections: patchEmptyAiSectionsWithTemplate(aiAnalysis.sections, ruleReport),
+    };
+  }
 
   let aiAnalysisStatus: PaidReportView["aiAnalysisStatus"];
   if (!hasPaid) {
@@ -299,9 +422,10 @@ export async function getReportView(reportId: string): Promise<PaidReportView | 
 
   return {
     ruleReport,
+    nickname: r.nickname,
     hasPaid,
     aiAnalysisStatus,
-    aiAnalysis: aiMapped.result,
+    aiAnalysis,
     facetResult: facet,
   };
 }
@@ -532,8 +656,9 @@ export async function generateReportAi(reportId: string) {
 
   try {
     const full = unlockReport(record);
+    const facet = r.facetResult ? (r.facetResult as unknown as FacetResult) : null;
     const analysis = await generateAiAnalysis(
-      buildAiRequest(profile, record, resolvedId, strengths),
+      buildAiRequest(profile, record, resolvedId, strengths, facet),
       full,
     );
 
@@ -572,12 +697,8 @@ export async function generateReportAi(reportId: string) {
 export async function submitAdvancedQuiz(reportId: string, answers: QuizAnswerInput[]): Promise<FacetResult> {
   const report = await prisma.report.findFirst({
     where: { OR: [{ id: reportId }, { slug: reportId }] },
-    include: { order: true },
   });
   if (!report) throw new Error("报告不存在");
-  const paid = report.order?.status === "paid";
-  if (!paid) throw new Error("请先解锁完整报告");
-  if (report.status !== "paid_ready") throw new Error("未解锁完整报告");
 
   if (answers.length !== advancedQuestions.length) {
     throw new Error("进阶题目未答完");
@@ -603,7 +724,128 @@ export async function submitAdvancedQuiz(reportId: string, answers: QuizAnswerIn
   return result;
 }
 
+const REDEEM_THROTTLE_WINDOW_MS = 15 * 60 * 1000;
+const REDEEM_THROTTLE_MAX_ATTEMPTS = 20;
+
+export async function markReportUnlockedViaRedeem(reportKey: string, userId: string, rawCode: string) {
+  const report = await prisma.report.findFirst({
+    where: { OR: [{ id: reportKey }, { slug: reportKey }] },
+    include: { order: true },
+  });
+  if (!report) {
+    throw new Error("报告不存在");
+  }
+  if (report.userId !== userId) {
+    throw new Error("无权操作");
+  }
+  if (report.order?.status === "paid") {
+    return getReportView(report.id);
+  }
+
+  const since = new Date(Date.now() - REDEEM_THROTTLE_WINDOW_MS);
+  const attempts = await prisma.redeemAttempt.count({
+    where: { reportId: report.id, createdAt: { gte: since } },
+  });
+  if (attempts >= REDEEM_THROTTLE_MAX_ATTEMPTS) {
+    throw new Error("尝试过于频繁，请稍后再试");
+  }
+  await prisma.redeemAttempt.create({ data: { reportId: report.id } });
+
+  const normalized = normalizeRedeemCode(rawCode);
+  if (normalized.length < 3) {
+    throw new Error("兑换码无效或已失效");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const fresh = await tx.report.findUnique({
+      where: { id: report.id },
+      include: { order: true },
+    });
+    if (!fresh) {
+      throw new Error("报告不存在");
+    }
+    if (fresh.order?.status === "paid") {
+      return;
+    }
+
+    const codeRow = await tx.redemptionCode.findFirst({
+      where: {
+        codeNormalized: normalized,
+        active: true,
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+      },
+    });
+    if (!codeRow) {
+      throw new Error("兑换码无效或已失效");
+    }
+    if (codeRow.redemptionCount >= codeRow.maxRedemptions) {
+      throw new Error("兑换码无效或已失效");
+    }
+
+    const bumped = await tx.redemptionCode.updateMany({
+      where: {
+        id: codeRow.id,
+        redemptionCount: { lt: codeRow.maxRedemptions },
+      },
+      data: { redemptionCount: { increment: 1 } },
+    });
+    if (bumped.count !== 1) {
+      throw new Error("兑换码无效或已失效");
+    }
+
+    await tx.redemptionUse.create({
+      data: {
+        codeId: codeRow.id,
+        reportId: fresh.id,
+        userId,
+      },
+    });
+
+    await tx.report.update({
+      where: { id: fresh.id },
+      data: { status: "paid_ready", isPremiumLocked: false },
+    });
+
+    const now = new Date();
+    const existingOrder = await tx.order.findUnique({ where: { reportId: fresh.id } });
+    if (existingOrder) {
+      await tx.order.update({
+        where: { reportId: fresh.id },
+        data: {
+          status: "paid",
+          paidAt: now,
+          amount: 0,
+          paymentChannel: "redeem",
+          thirdPartyOrderId: null,
+        },
+      });
+    } else {
+      await tx.order.create({
+        data: {
+          reportId: fresh.id,
+          amount: 0,
+          currency: "CNY",
+          paymentChannel: "redeem",
+          status: "paid",
+          paidAt: now,
+          expiredAt: new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000),
+        },
+      });
+    }
+
+    await tx.aiReport.updateMany({
+      where: { reportId: fresh.id, status: "failed" },
+      data: { status: "not_started", error: null, failureReason: null },
+    });
+  });
+
+  return getReportView(report.id);
+}
+
 export async function clearAllReportData() {
+  await prisma.redemptionUse.deleteMany();
+  await prisma.redeemAttempt.deleteMany();
+  await prisma.redemptionCode.deleteMany();
   await prisma.shareEvent.deleteMany();
   await prisma.order.deleteMany();
   await prisma.aiReport.deleteMany();

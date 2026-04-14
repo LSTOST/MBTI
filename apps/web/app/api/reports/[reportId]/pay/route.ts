@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createPaymentIntent, markReportPaid } from "@/features/report/repository";
 import { getEnv } from "@/lib/env";
+import { getPublicUnlockMode } from "@/lib/unlock-mode";
 
 type Context = {
   params: Promise<{ reportId: string }>;
@@ -14,6 +15,10 @@ type Context = {
  */
 export async function POST(_req: Request, context: Context) {
   try {
+    if (getPublicUnlockMode() !== "payment") {
+      return NextResponse.json({ error: "当前未开启支付解锁" }, { status: 403 });
+    }
+
     const { reportId } = await context.params;
     const env = getEnv();
 
