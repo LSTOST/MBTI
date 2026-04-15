@@ -415,7 +415,10 @@ export function QuizRunner({ profile }: Props) {
     setError("");
 
     try {
-      await fetch("/api/user/init", { method: "POST", credentials: "include" });
+      const initRes = await fetch("/api/user/init", { method: "POST", credentials: "include" });
+      if (!initRes.ok) {
+        throw new Error("用户身份初始化失败，请刷新页面后重试。");
+      }
 
       const response = await fetch("/api/reports", {
         method: "POST",
