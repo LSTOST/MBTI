@@ -10,6 +10,8 @@ import { SoulmateReveal } from "@/components/soulmate-reveal";
 import { getReportRecord, getReportView } from "@/features/report/repository";
 import { ReportActions } from "@/features/report/report-actions";
 import { ScrollToReportSection } from "@/features/report/scroll-to-report-section";
+import type { ContentSection } from "@/lib/content";
+import { getMbtiContent, getZodiacContent } from "@/lib/content";
 import type { FacetScoreItem, MbtiDimensionKey, MatchItem } from "@/lib/types";
 import { formatCompatibilityScore } from "@/lib/utils";
 
@@ -44,6 +46,8 @@ export default async function ReportPage({ params }: Props) {
   }
 
   const report = view.ruleReport;
+  const mbtiSections = getMbtiContent(report.mbtiType);
+  const zodiacSections = getZodiacContent(report.sunSign);
 
   return (
     <main className="relative mx-auto min-h-svh w-full max-w-[428px] overflow-x-hidden bg-[#0A0A0F]">
@@ -223,7 +227,36 @@ export default async function ReportPage({ params }: Props) {
         </Reveal>
       </section>
 
-      {/* ── Module 06: 进阶测试 / 子人格 ── */}
+      {/* ── Module 06: MBTI 深度解读 ── */}
+      {mbtiSections.length > 0 && (
+        <section className="bg-[#111118] px-6 py-16">
+          <Reveal>
+            <ModuleHeader number="06" title={`${report.mbtiType} · 灵魂伴侣深度解读`} />
+            <div className="mt-10 flex flex-col gap-10">
+              {mbtiSections.map((s) => (
+                <ContentSectionCard key={s.title} section={s} />
+              ))}
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {/* ── Module 07: 星座特质解读 ── */}
+      {zodiacSections.length > 0 && (
+        <section className="bg-[#0A0A0F] px-6 py-16">
+          <div className="mx-auto mb-12 h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,92,252,0.4), transparent)" }} />
+          <Reveal>
+            <ModuleHeader number="07" title={`${report.sunSign} · 星座特质解读`} />
+            <div className="mt-10 flex flex-col gap-10">
+              {zodiacSections.map((s) => (
+                <ContentSectionCard key={s.title} section={s} />
+              ))}
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {/* ── Module 08: 进阶测试 / 子人格 ── */}
       <section
         id="module-06"
         className={`scroll-mt-24 bg-[#0A0A0F] px-6 ${view.facetResult ? "py-16" : "pt-16 pb-8"}`}
@@ -231,7 +264,7 @@ export default async function ReportPage({ params }: Props) {
           <div className="mx-auto mb-12 h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,92,252,0.4), transparent)" }} />
           {view.facetResult ? (
             <Reveal>
-              <ModuleHeader number="06" title="你的灵魂伴侣子人格" />
+              <ModuleHeader number="08" title="你的灵魂伴侣子人格" />
               <p className="mt-3 text-[13px] leading-[1.6] text-[#48484A]">
                 基于进阶测试的 12 项子维度分析
               </p>
@@ -444,6 +477,40 @@ function FacetResultDisplay({ scores }: { scores: FacetScoreItem[] }) {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function ContentSectionCard({ section }: { section: ContentSection }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <h3 className="text-[17px] font-semibold leading-snug text-[#F5F5F7]">{section.title}</h3>
+
+      {section.paragraphs.map((p, i) => (
+        <p key={i} className="text-[15px] leading-[1.7] text-[#8E8E93]">
+          {p}
+        </p>
+      ))}
+
+      {section.bullets.length > 0 && (
+        <ul className="mt-1 flex flex-col gap-2">
+          {section.bullets.map((b, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-[14px] leading-[1.6] text-[#8E8E93]">
+              <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#7C5CFC]" aria-hidden />
+              {b}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {section.example && (
+        <div
+          className="mt-1 rounded-xl px-4 py-3"
+          style={{ background: "rgba(124,92,252,0.08)", borderLeft: "2px solid rgba(124,92,252,0.4)" }}
+        >
+          <p className="text-[14px] leading-[1.7] text-[#A393F5]">{section.example}</p>
+        </div>
+      )}
     </div>
   );
 }
