@@ -2,12 +2,48 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** 解析 md 路径：不依赖 process.cwd（PM2/next start 的工作目录不一定是 apps/web） */
-const LIB_DIR = dirname(fileURLToPath(import.meta.url));
-const CONTENT_DIR_CANDIDATES = [
-  join(LIB_DIR, "..", "content"),
-  join(LIB_DIR, "..", "..", "..", "content"),
-];
+/**
+ * 从某一目录逐级向上，每一层都尝试 `{当前目录}/content`。
+ * - process.cwd() 可在任意工作目录启动 next 时命中 apps/web/content 或 仓库根/content
+ * - import.meta.url 在打包后指向 .next/server/chunks/xxx.js，逐级向上可命中 apps/web/content
+ */
+function enumerateContentRoots(startDir: string, maxHops = 14): string[] {
+  const roots: string[] = [];
+  let cur = startDir;
+  for (let i = 0; i < maxHops; i++) {
+    roots.push(join(cur, "content"));
+    const parent = dirname(cur);
+    if (parent === cur) break;
+    cur = parent;
+  }
+  return roots;
+}
+
+function allContentDirs(): string[] {
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  const push = (p: string) => {
+    const norm = join(p); // normalize
+    if (!seen.has(norm)) {
+      seen.add(norm);
+      ordered.push(norm);
+    }
+  };
+
+  const envDir = process.env.CONTENT_MD_DIR?.trim();
+  if (envDir) push(envDir);
+
+  for (const r of enumerateContentRoots(process.cwd())) push(r);
+
+  try {
+    const bundledFile = dirname(fileURLToPath(import.meta.url));
+    for (const r of enumerateContentRoots(bundledFile)) push(r);
+  } catch {
+    /* noop */
+  }
+
+  return ordered;
+}
 
 /** 中文星座名 → 文件 slug */
 const ZODIAC_SLUG: Record<string, string> = {
@@ -121,7 +157,7 @@ function parseContent(md: string): ContentSection[] {
 
 function readContent(slug: string): ContentSection[] {
   const fileName = `${slug}.md`;
-  for (const dir of CONTENT_DIR_CANDIDATES) {
+  for (const dir of allContentDirs()) {
     const filePath = join(dir, fileName);
     try {
       if (!existsSync(filePath)) continue;
