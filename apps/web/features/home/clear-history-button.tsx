@@ -25,6 +25,11 @@ export function ClearHistoryButton() {
         /* ignore */
       }
       router.refresh();
+    } catch (e) {
+      console.error(e);
+      window.alert(
+        e instanceof Error ? `清除失败：${e.message}` : "清除失败，请稍后重试。",
+      );
     } finally {
       setBusy(false);
     }
