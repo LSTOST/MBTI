@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 import { UnlockDeepReportModal } from "@/features/report/unlock-deep-report-modal";
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
@@ -35,7 +35,6 @@ export function ReportActions({
 }: Props) {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [pending, startTransition] = useTransition();
   const [paying, setPaying] = useState(false);
   const [paywallOpen, setPaywallOpen] = useState(false);
 
@@ -99,26 +98,6 @@ export function ReportActions({
     }
   }
 
-  function generateAi() {
-    setError("");
-    trackEvent(analyticsEvents.clickedAi, { reportId });
-
-    startTransition(async () => {
-      try {
-        const res = await fetch(`/api/reports/${reportId}/ai`, { method: "POST" });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "AI 生成失败");
-
-        trackEvent(analyticsEvents.aiCompleted, { reportId });
-        router.push(`/report/${reportId}/ai`);
-        router.refresh();
-      } catch (e) {
-        trackEvent(analyticsEvents.aiFailed, { reportId });
-        setError(e instanceof Error ? e.message : "AI 生成失败");
-      }
-    });
-  }
-
   return (
     <div className="flex w-full flex-col gap-2">
       {aiStatus === "locked" && showLockedPayCta ? (
@@ -159,7 +138,7 @@ export function ReportActions({
             />
           )}
         </>
-      ) : aiStatus === "locked" ? null : aiStatus === "completed" ? (
+      ) : aiStatus === "locked" ? null : (
         <>
           <Link href={`/report/${reportId}/ai`} className={primaryBtn}>
             查看深度报告
@@ -169,14 +148,6 @@ export function ReportActions({
             返回首页
           </Link>
         </>
-      ) : aiStatus === "failed" ? (
-        <button type="button" onClick={generateAi} disabled={pending} className={primaryBtn}>
-          {pending ? "正在生成…" : "重试生成深度报告"}
-        </button>
-      ) : (
-        <button type="button" onClick={generateAi} disabled={pending || aiStatus === "processing"} className={primaryBtn}>
-          {pending || aiStatus === "processing" ? "正在生成…" : "生成深度报告"}
-        </button>
       )}
 
       {error && !(aiStatus === "locked" && showLockedPayCta) ? (

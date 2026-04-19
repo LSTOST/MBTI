@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Reveal, ScaleIn } from "@/components/reveal";
 import { AiReportChrome } from "@/features/report/ai-report-chrome";
 import { getReportView } from "@/features/report/repository";
+import { getMbtiContent, getZodiacContent, type ContentSection } from "@/lib/content";
 import type { AiAnalysisSection } from "@/lib/types";
 
 type Props = {
@@ -21,12 +22,19 @@ export default async function AiReportPage({ params }: Props) {
     redirect(`/report/${reportId}`);
   }
 
-  if (view.aiAnalysisStatus !== "completed" || !view.aiAnalysis) {
-    redirect(`/report/${reportId}`);
-  }
-
-  const { sections, summary } = view.aiAnalysis;
   const report = view.ruleReport;
+
+  const mbtiSections = getMbtiContent(report.mbtiType);
+  const zodiacSections = getZodiacContent(report.sunSign);
+  const allSections = [...mbtiSections, ...zodiacSections];
+  const sections: AiAnalysisSection[] = allSections.map((s: ContentSection, i) => ({
+    key: `section-${i}`,
+    title: s.title,
+    content: s.paragraphs.join("\n\n"),
+    bullets: s.bullets,
+    example: s.example,
+  }));
+  const summary = `基于你的 ${report.mbtiType} 人格与 ${report.sunSign} 的深度解读，以下为灵魂伴侣关系全景报告。`;
   const nickname = view.nickname.trim() || "你";
   const loveStyleCore = report.loveStyleLabel.replace(report.sunSign, "");
   const depthHeroTitle = `${nickname}：${loveStyleCore}`;

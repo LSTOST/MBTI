@@ -224,8 +224,15 @@ function prismaAiToResult(reportId: string, ai: NonNullable<Awaited<ReturnType<t
   result: AiAnalysisResult | null;
   error: string | null;
 } {
-  const st = mapAiStatusToView(ai.status);
-  if (ai.status === "completed" && ai.sections) {
+  // If stuck in processing for > 5 min (serverless timeout), treat as failed so user can retry
+  const STALE_MS = 5 * 60 * 1000;
+  const isStaleProcessing =
+    ai.status === "processing" && Date.now() - ai.updatedAt.getTime() > STALE_MS;
+
+  const effectiveStatus = isStaleProcessing ? ("failed" as const) : ai.status;
+  const st = mapAiStatusToView(effectiveStatus);
+
+  if (effectiveStatus === "completed" && ai.sections) {
     const raw = Array.isArray(ai.sections) ? (ai.sections as unknown[]) : [];
     const sections = raw.map(normalizeAiSectionFromDb);
     const result: AiAnalysisResult = {
@@ -242,7 +249,7 @@ function prismaAiToResult(reportId: string, ai: NonNullable<Awaited<ReturnType<t
   return {
     status: st,
     result: null,
-    error: ai.error ?? ai.failureReason,
+    error: isStaleProcessing ? "生成超时，请重试" : (ai.error ?? ai.failureReason),
   };
 }
 
@@ -409,19 +416,9 @@ export async function getReportView(reportId: string): Promise<PaidReportView | 
     };
   }
 
-  let aiAnalysisStatus: PaidReportView["aiAnalysisStatus"];
-  if (!hasPaid) {
-    aiAnalysisStatus = "locked";
-  } else {
-    aiAnalysisStatus =
-      aiMapped.status === "not_started"
-        ? "not_started"
-        : aiMapped.status === "processing"
-          ? "processing"
-          : aiMapped.status === "completed"
-            ? "completed"
-            : "failed";
-  }
+  // Deep report now reads from local markdown files — no AI generation needed.
+  // For paid users, content is always available; just mark as completed.
+  const aiAnalysisStatus: PaidReportView["aiAnalysisStatus"] = hasPaid ? "completed" : "locked";
 
   return {
     ruleReport,
