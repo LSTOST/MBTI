@@ -1,5 +1,13 @@
-import { readFileSync } from "fs";
-import { join } from "path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+/** 解析 md 路径：不依赖 process.cwd（PM2/next start 的工作目录不一定是 apps/web） */
+const LIB_DIR = dirname(fileURLToPath(import.meta.url));
+const CONTENT_DIR_CANDIDATES = [
+  join(LIB_DIR, "..", "content"),
+  join(LIB_DIR, "..", "..", "..", "content"),
+];
 
 /** 中文星座名 → 文件 slug */
 const ZODIAC_SLUG: Record<string, string> = {
@@ -112,13 +120,19 @@ function parseContent(md: string): ContentSection[] {
 }
 
 function readContent(slug: string): ContentSection[] {
-  try {
-    const filePath = join(process.cwd(), "content", `${slug}.md`);
-    const md = readFileSync(filePath, "utf-8");
-    return parseContent(md);
-  } catch {
-    return [];
+  const fileName = `${slug}.md`;
+  for (const dir of CONTENT_DIR_CANDIDATES) {
+    const filePath = join(dir, fileName);
+    try {
+      if (!existsSync(filePath)) continue;
+      const md = readFileSync(filePath, "utf-8");
+      const sections = parseContent(md);
+      if (sections.length > 0) return sections;
+    } catch {
+      continue;
+    }
   }
+  return [];
 }
 
 /** 根据 MBTI 类型（如 "INFP"）读取内容 */
