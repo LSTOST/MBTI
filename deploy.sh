@@ -9,7 +9,10 @@ echo "📦 拉取最新代码..."
 git pull origin main
 
 echo "🔧 安装依赖..."
-npm install --omit=dev
+npm --prefix apps/web install --omit=dev
+
+echo "🗄️  同步数据库结构（与 prisma/schema.prisma 对齐）..."
+npm --prefix apps/web run db:push
 
 echo "🏗️  构建项目..."
 npm run build
