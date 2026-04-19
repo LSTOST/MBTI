@@ -277,7 +277,10 @@ export async function createReportFromSubmission(input: CreateReportRequest, use
 
   let slug = newReportSlug();
   for (let i = 0; i < 8; i++) {
-    const exists = await prisma.report.findUnique({ where: { slug } });
+    const exists = await prisma.report.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
     if (!exists) break;
     slug = newReportSlug();
   }

@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.typecheck.json",
     "prisma:generate": "prisma generate --config prisma.config.ts",
     "db:push": "prisma db push --config prisma.config.ts",
+    "db:sql:report-testid": "prisma db execute --file ../../prisma/sql/add_report_test_id.sql --config prisma.config.ts",
     "seed:mbti": "node scripts/seed-mbti-template.ts"
   },
   "dependencies": {
