@@ -847,8 +847,6 @@ export async function clearAllReportData() {
   await prisma.redeemAttempt.deleteMany();
   await prisma.redemptionCode.deleteMany();
   await prisma.shareEvent.deleteMany();
-  /** CouponUse.orderId 指向 Order；必须先删，否则会外键阻塞 order/report 清理 */
-  await prisma.couponUse.deleteMany();
   await prisma.order.deleteMany();
   await prisma.aiReport.deleteMany();
   await prisma.report.deleteMany();

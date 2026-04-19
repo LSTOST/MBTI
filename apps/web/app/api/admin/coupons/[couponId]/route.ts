@@ -150,7 +150,12 @@ export async function DELETE(req: Request, context: Context) {
       );
     }
 
-    await prisma.coupon.delete({ where: { id: couponId } });
+    // Explicitly nullify Order.couponId before deleting, in case the DB-level
+    // onDelete: SetNull FK was not applied (e.g., migration not run in prod).
+    await prisma.$transaction(async (tx) => {
+      await tx.order.updateMany({ where: { couponId }, data: { couponId: null } });
+      await tx.coupon.delete({ where: { id: couponId } });
+    });
 
     await recordAudit({
       action: "coupon.delete",

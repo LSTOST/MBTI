@@ -152,7 +152,7 @@ export default async function AdminCouponsPage({ searchParams }: { searchParams:
                             id={c.id}
                             code={c.code}
                             active={c.active}
-                            hasUses={c.redemptionCount > 0}
+                            hasUses={c.useCount > 0}
                           />
                         </div>
                       </td>
@@ -217,6 +217,7 @@ async function fetchCoupons(active: boolean | null, page: number, pageSize: numb
       minAmount: c.minAmount,
       maxRedemptions: c.maxRedemptions,
       redemptionCount: c.redemptionCount,
+      useCount: c._count.uses,
       expiresAt: c.expiresAt?.toISOString() ?? null,
       active: c.active,
     })),

@@ -259,7 +259,20 @@ export function RedeemCodesConsole() {
                   const st = statusLabel(row);
                   return (
                     <tr key={row.id} className="border-b border-[#1A1A24] last:border-0">
-                      <td className="px-4 py-3.5 font-mono text-[12px] text-[#E8E8ED]">{row.code}</td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-[12px] text-[#E8E8ED]">{row.code}</span>
+                          <button
+                            type="button"
+                            title="复制"
+                            aria-label="复制兑换码"
+                            onClick={() => void copyCode(row.code)}
+                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#48484A] transition-colors hover:bg-[#1A1A24] hover:text-[#F5F5F7]"
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
                       <td className="px-4 py-3.5">
                         <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium ${st.className}`}>
                           {st.text}
@@ -277,9 +290,6 @@ export function RedeemCodesConsole() {
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="flex flex-wrap justify-end gap-1">
-                          <IconBtn label="复制" onClick={() => void copyCode(row.code)}>
-                            <Copy className="h-4 w-4" />
-                          </IconBtn>
                           <IconBtn label="编辑" onClick={() => setEditRow(row)}>
                             <Pencil className="h-4 w-4" />
                           </IconBtn>
@@ -351,7 +361,13 @@ export function RedeemCodesConsole() {
           onSaved={() => {
             setCreateOpen(false);
             showToast("已创建");
-            void load();
+            // 新建的码按 createdAt desc 排在第 1 页；若当前不在第 1 页，
+            // setPage(1) 会触发 useEffect → load()，否则显式调用 load()。
+            if (page !== 1) {
+              setPage(1);
+            } else {
+              void load();
+            }
           }}
         />
       ) : null}

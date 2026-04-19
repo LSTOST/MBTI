@@ -80,7 +80,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[#1A1A24]">
-                  {["昵称", "类型", "测试", "状态", "创建时间", ""].map((h) => (
+                  {["昵称", "类型", "测试", "状态", "答题", "创建时间", ""].map((h) => (
                     <th key={h} className="px-5 py-3 text-left text-[11px] font-medium uppercase tracking-wide text-[#48484A]">
                       {h}
                     </th>
@@ -90,7 +90,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
               <tbody>
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-5 py-12 text-center text-[13px] text-[#48484A]">
+                    <td colSpan={7} className="px-5 py-12 text-center text-[13px] text-[#48484A]">
                       暂无报告
                     </td>
                   </tr>
@@ -106,6 +106,13 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
                         <Badge tone={STATUS_TONE[r.status] ?? "neutral"}>
                           {STATUS_LABELS[r.status] ?? r.status}
                         </Badge>
+                      </td>
+                      <td className="px-5 py-3 text-[12px] tabular-nums">
+                        {r.answerCount > 0 ? (
+                          <span className="text-[#34C759]">{r.answerCount} 题</span>
+                        ) : (
+                          <span className="text-[#48484A]">—</span>
+                        )}
                       </td>
                       <td className="px-5 py-3 text-[12px] text-[#48484A] whitespace-nowrap">
                         {new Date(r.createdAt).toLocaleDateString("zh-CN")}
@@ -187,6 +194,16 @@ async function fetchReports({
         testId: true,
         test: { select: { name: true } },
         createdAt: true,
+        user: {
+          select: {
+            quizAttempts: {
+              where: { status: "completed" },
+              orderBy: { completedAt: "desc" },
+              take: 1,
+              select: { id: true, _count: { select: { answers: true } } },
+            },
+          },
+        },
       },
     }),
     prisma.report.count({ where }),
@@ -201,6 +218,8 @@ async function fetchReports({
       status: r.status as string,
       testName: r.test?.name ?? null,
       createdAt: r.createdAt.toISOString(),
+      answerCount: r.user.quizAttempts[0]?._count.answers ?? 0,
+      quizAttemptId: r.user.quizAttempts[0]?.id ?? null,
     })),
     total,
   };

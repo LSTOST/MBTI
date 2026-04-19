@@ -50,9 +50,11 @@ export default async function ReportPage({ params }: Props) {
   const zodiacSections = getZodiacContent(report.sunSign);
 
   return (
-    <main className="relative mx-auto min-h-svh w-full max-w-[428px] overflow-x-hidden bg-[#0A0A0F]">
+    <main className="relative mx-auto min-h-svh w-full max-w-[428px] bg-[#0A0A0F]">
       <ScrollToReportSection />
       {/* 整页 sticky：滚到报告底部时仍能点到返回 / 分享（不再放在首屏内或底部横排） */}
+      {/* overflow-x-hidden 不能放在 <main> 上，否则在 Safari/WebKit 里会创建新的滚动容器，导致 sticky 失效。
+          改为放在 header 之后的内容包裹层上。 */}
       <header
         className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#0A0A0F]/90 px-6 py-2 pt-[max(8px,env(safe-area-inset-top,0px))] backdrop-blur-sm supports-[backdrop-filter]:bg-[#0A0A0F]/75"
         aria-label="页面导航"
@@ -91,6 +93,7 @@ export default async function ReportPage({ params }: Props) {
         </Link>
       </header>
 
+      <div className="overflow-x-hidden">
       {/* ── Hero ──
           高度 = 视口减去页眉，使贴底提示落在首屏可见区（页眉 + h-svh 会把提示顶到第二屏以下） */}
       <section className="relative flex h-[calc(100svh-(max(0.5rem,env(safe-area-inset-top,0px))+2.75rem+0.5rem))] flex-col items-center overflow-hidden">
@@ -341,6 +344,7 @@ export default async function ReportPage({ params }: Props) {
           />
         </section>
       ) : null}
+      </div>{/* /overflow-x-hidden */}
     </main>
   );
 }
