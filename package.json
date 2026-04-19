@@ -7,7 +7,8 @@
     "lint": "npm --prefix apps/web run lint",
     "typecheck": "npm --prefix apps/web run typecheck",
     "prisma:generate": "npm --prefix apps/web run prisma:generate",
-    "db:push": "npm --prefix apps/web run db:push"
+    "db:push": "npm --prefix apps/web run db:push",
+    "deploy": "bash deploy.sh"
   }
 }
 
