@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-cd /www/wwwroot/peibupei.kyx123.com
+# 始终在仓库根目录（本脚本所在目录）执行，与当前工作目录无关
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 echo "📦 拉取最新代码..."
 git pull origin main
