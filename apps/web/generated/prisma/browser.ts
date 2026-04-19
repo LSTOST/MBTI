@@ -54,9 +54,15 @@ export type AiReport = Prisma.AiReportModel
 export type ShareEvent = Prisma.ShareEventModel
 /**
  * Model RedemptionCode
- * 兑换码（后台可配置：总可兑次数、有效期、启用状态）
+ * 兑换码。新语义 = 测试入口准入凭证；历史老语义（解锁付费报告）在过渡期兼容保留。
+ * testId = null 表示通用（任何 accessMode=redeem_required 的测试均可用）。
  */
 export type RedemptionCode = Prisma.RedemptionCodeModel
+/**
+ * Model RedemptionBatch
+ * 兑换码批次：一次生成 N 张码共享配置，便于归档导出。
+ */
+export type RedemptionBatch = Prisma.RedemptionBatchModel
 /**
  * Model RedemptionUse
  * 某次兑换核销记录（审计；同报告仅能通过解锁流程消费一次）
@@ -67,3 +73,38 @@ export type RedemptionUse = Prisma.RedemptionUseModel
  * 兑换接口防刷：按报告维度限流
  */
 export type RedeemAttempt = Prisma.RedeemAttemptModel
+/**
+ * Model TestTemplate
+ * 测试模板。MBTI 是第一个实例（slug = "mbti-love"）。
+ */
+export type TestTemplate = Prisma.TestTemplateModel
+/**
+ * Model TestQuestion
+ * 测试题目。questionKey 跨版本稳定，供 QuizAnswer 引用。
+ */
+export type TestQuestion = Prisma.TestQuestionModel
+/**
+ * Model Coupon
+ * 
+ */
+export type Coupon = Prisma.CouponModel
+/**
+ * Model CouponUse
+ * 
+ */
+export type CouponUse = Prisma.CouponUseModel
+/**
+ * Model TrackedEvent
+ * 埋点事件目录。只做管理元信息，不存事件数据（真实数据在 PostHog）。
+ */
+export type TrackedEvent = Prisma.TrackedEventModel
+/**
+ * Model AnalyticsFunnel
+ * 保存的漏斗配置，供 Dashboard/漏斗页可视化。
+ */
+export type AnalyticsFunnel = Prisma.AnalyticsFunnelModel
+/**
+ * Model AdminAuditLog
+ * 后台破坏性/配置性操作审计。RBAC 未上线前 actor 固定为 "admin"。
+ */
+export type AdminAuditLog = Prisma.AdminAuditLogModel

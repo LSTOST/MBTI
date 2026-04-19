@@ -20,7 +20,7 @@ export default async function AdminLoginPage({ searchParams }: Props) {
     const jar = await cookies();
     const token = jar.get(ADMIN_SESSION_COOKIE)?.value;
     if (token && verifyAdminSessionToken(token, secret)) {
-      redirect("/admin/redeem-codes");
+      redirect("/admin");
     }
   }
   return <AdminLoginForm configError={sp.reason === "config"} />;

@@ -124,7 +124,7 @@ export function IntakeForm() {
     updateField("birthDate", cand);
     window.localStorage.removeItem(MBTI_PROGRESS_KEY);
     trackEvent(analyticsEvents.startedQuiz, { stage: "intake_submitted" });
-    router.push("/quiz");
+    router.push("/quiz/mbti-love");
   }
 
   return (

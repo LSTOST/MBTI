@@ -94,6 +94,9 @@ model Report {
   slug            String             @unique
   userId          String
   user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 关联测试模板；历史数据可空，seed 脚本会回填 mbti-love
+  testId          String?
+  test            TestTemplate?      @relation(fields: [testId], references: [id])
   status          ReportRecordStatus @default(free_ready)
   summary         String
   nickname        String
@@ -117,13 +120,23 @@ model Report {
   shareEvents     ShareEvent[]
   redemptionUses  RedemptionUse[]
   redeemAttempts  RedeemAttempt[]
+
+  @@index([testId])
 }
 
 model Order {
   id                String          @id @default(cuid())
   reportId          String          @unique
   report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  /// 用户实付金额（分）。优惠码抵扣后的最终值。
   amount            Int
+  /// 原价（分），使用优惠码前金额；历史订单为 null（读时 fallback 到 amount）
+  originalAmount    Int?
+  /// 抵扣金额（分），amount = originalAmount - discountAmount
+  discountAmount    Int             @default(0)
+  /// 本次下单使用的优惠码（若有）。删除 Coupon 时置空，不影响订单。
+  couponId          String?
+  coupon            Coupon?         @relation(fields: [couponId], references: [id], onDelete: SetNull)
   currency          String          @default("CNY")
   paymentChannel    PaymentChannel  @default(mock)
   status            OrderStatus     @default(created)
@@ -135,6 +148,7 @@ model Order {
 
   @@index([status])
   @@index([thirdPartyOrderId])
+  @@index([couponId])
 }
 
 model AiReport {
@@ -169,10 +183,15 @@ model ShareEvent {
   @@index([reportId])
 }
 
-/// 兑换码（后台可配置：总可兑次数、有效期、启用状态）
+/// 兑换码。新语义 = 测试入口准入凭证；历史老语义（解锁付费报告）在过渡期兼容保留。
+/// testId = null 表示通用（任何 accessMode=redeem_required 的测试均可用）。
 model RedemptionCode {
   id               String           @id @default(cuid())
   codeNormalized   String           @unique
+  testId           String?
+  test             TestTemplate?    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  batchId          String?
+  batch            RedemptionBatch? @relation(fields: [batchId], references: [id], onDelete: SetNull)
   note             String?
   maxRedemptions   Int              @default(1)
   redemptionCount  Int              @default(0)
@@ -181,6 +200,28 @@ model RedemptionCode {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   uses             RedemptionUse[]
+
+  @@index([batchId])
+  @@index([testId, active])
+}
+
+/// 兑换码批次：一次生成 N 张码共享配置，便于归档导出。
+model RedemptionBatch {
+  id        String           @id @default(cuid())
+  name      String
+  testId    String?
+  test      TestTemplate?    @relation(fields: [testId], references: [id], onDelete: SetNull)
+  note      String?
+  /// 生成时的冗余统计（显示用，实时值仍通过 count 聚合）
+  codeCount Int              @default(0)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  /// 预留：RBAC 上线后记录创建人
+  createdBy String?
+  codes     RedemptionCode[]
+
+  @@index([createdAt])
+  @@index([testId])
 }
 
 /// 某次兑换核销记录（审计；同报告仅能通过解锁流程消费一次）
@@ -206,4 +247,197 @@ model RedeemAttempt {
   createdAt DateTime @default(now())
 
   @@index([reportId, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// 多测试 CMS
+// -----------------------------------------------------------------------------
+
+enum TestStatus {
+  draft
+  published
+  archived
+}
+
+enum TestAccessMode {
+  public
+  redeem_required
+}
+
+enum TestPricingMode {
+  free
+  paid_unlock
+  paid_entry
+}
+
+enum QuestionType {
+  likert_5
+  single_choice
+  multi_choice
+}
+
+/// 测试模板。MBTI 是第一个实例（slug = "mbti-love"）。
+model TestTemplate {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  name            String
+  tagline         String?
+  description     String?
+  coverImage      String?
+  status          TestStatus      @default(draft)
+  accessMode      TestAccessMode  @default(public)
+  pricingMode     TestPricingMode @default(paid_unlock)
+  /// 分，CNY。paid_entry 入场价；paid_unlock 高级报告解锁价。
+  basePrice       Int             @default(0)
+  /// AI 深度报告单独定价（可空）。null = 随 basePrice，与现逻辑一致。
+  aiPrice         Int?
+  /// 报告策略代号（代码里注册实现）：mbti_compatibility / disc_workstyle / simple_sum / ...
+  reportStrategy  String
+  /// 策略相关配置；结构由策略自定义，应用层用 Zod 校验。
+  scoringConfig   Json
+  sortOrder       Int             @default(0)
+  publishedAt     DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  questions       TestQuestion[]
+  reports         Report[]
+  redemptionCodes RedemptionCode[]
+  redemptionBatches RedemptionBatch[]
+  coupons         Coupon[]
+
+  @@index([status, sortOrder])
+}
+
+/// 测试题目。questionKey 跨版本稳定，供 QuizAnswer 引用。
+model TestQuestion {
+  id          String        @id @default(cuid())
+  testId      String
+  test        TestTemplate  @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionKey String
+  orderIndex  Int
+  type        QuestionType  @default(likert_5)
+  prompt      String
+  dimension   String?
+  /// 按 type 解读：likert_5 = { leftPole, rightPole, leftLabel, rightLabel }；choice = { options: [...] }
+  config      Json
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([testId, questionKey])
+  @@index([testId, orderIndex])
+}
+
+// -----------------------------------------------------------------------------
+// 优惠码（支付抵扣）
+// -----------------------------------------------------------------------------
+
+enum CouponType {
+  percent_off
+  amount_off
+}
+
+enum CouponScope {
+  global
+  test
+}
+
+model Coupon {
+  id              String        @id @default(cuid())
+  codeNormalized  String        @unique
+  type            CouponType
+  /// percent_off: 1-100；amount_off: 分
+  value           Int
+  scope           CouponScope   @default(global)
+  testId          String?
+  test            TestTemplate? @relation(fields: [testId], references: [id], onDelete: Cascade)
+  /// 最低订单金额（分），低于不可用
+  minAmount       Int           @default(0)
+  maxRedemptions  Int?
+  redemptionCount Int           @default(0)
+  perUserLimit    Int?          @default(1)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  active          Boolean       @default(true)
+  note            String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  uses            CouponUse[]
+  orders          Order[]
+
+  @@index([active, scope])
+  @@index([testId])
+}
+
+model CouponUse {
+  id        String   @id @default(cuid())
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  /// 一个订单最多绑一个优惠码，unique 保并发唯一
+  orderId   String   @unique
+  userId    String
+  /// 冻结历史抵扣金额（分），避免 Coupon 改动后串值
+  discount  Int
+  createdAt DateTime @default(now())
+
+  @@index([couponId])
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// 埋点与分析
+// -----------------------------------------------------------------------------
+
+enum TrackedEventStatus {
+  active
+  deprecated
+}
+
+/// 埋点事件目录。只做管理元信息，不存事件数据（真实数据在 PostHog）。
+model TrackedEvent {
+  id          String             @id @default(cuid())
+  name        String             @unique
+  displayName String
+  category    String
+  description String?
+  /// 属性字段文档：[{ key, type, description, required }]
+  properties  Json
+  status      TrackedEventStatus @default(active)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([category, status])
+}
+
+/// 保存的漏斗配置，供 Dashboard/漏斗页可视化。
+model AnalyticsFunnel {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  /// [{ eventName, filters?: Record<string, any> }]，按数组顺序构建漏斗
+  steps       Json
+  windowHours Int      @default(24)
+  pinned      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// 后台审计
+// -----------------------------------------------------------------------------
+
+/// 后台破坏性/配置性操作审计。RBAC 未上线前 actor 固定为 "admin"。
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  actor      String
+  action     String
+  targetType String
+  targetId   String?
+  diff       Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([targetType, targetId])
 }

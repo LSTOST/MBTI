@@ -59,8 +59,16 @@ export const ModelName = {
   AiReport: 'AiReport',
   ShareEvent: 'ShareEvent',
   RedemptionCode: 'RedemptionCode',
+  RedemptionBatch: 'RedemptionBatch',
   RedemptionUse: 'RedemptionUse',
-  RedeemAttempt: 'RedeemAttempt'
+  RedeemAttempt: 'RedeemAttempt',
+  TestTemplate: 'TestTemplate',
+  TestQuestion: 'TestQuestion',
+  Coupon: 'Coupon',
+  CouponUse: 'CouponUse',
+  TrackedEvent: 'TrackedEvent',
+  AnalyticsFunnel: 'AnalyticsFunnel',
+  AdminAuditLog: 'AdminAuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -120,6 +128,7 @@ export const ReportScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   userId: 'userId',
+  testId: 'testId',
   status: 'status',
   summary: 'summary',
   nickname: 'nickname',
@@ -147,6 +156,9 @@ export const OrderScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   amount: 'amount',
+  originalAmount: 'originalAmount',
+  discountAmount: 'discountAmount',
+  couponId: 'couponId',
   currency: 'currency',
   paymentChannel: 'paymentChannel',
   status: 'status',
@@ -196,6 +208,8 @@ export type ShareEventScalarFieldEnum = (typeof ShareEventScalarFieldEnum)[keyof
 export const RedemptionCodeScalarFieldEnum = {
   id: 'id',
   codeNormalized: 'codeNormalized',
+  testId: 'testId',
+  batchId: 'batchId',
   note: 'note',
   maxRedemptions: 'maxRedemptions',
   redemptionCount: 'redemptionCount',
@@ -206,6 +220,20 @@ export const RedemptionCodeScalarFieldEnum = {
 } as const
 
 export type RedemptionCodeScalarFieldEnum = (typeof RedemptionCodeScalarFieldEnum)[keyof typeof RedemptionCodeScalarFieldEnum]
+
+
+export const RedemptionBatchScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  testId: 'testId',
+  note: 'note',
+  codeCount: 'codeCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy'
+} as const
+
+export type RedemptionBatchScalarFieldEnum = (typeof RedemptionBatchScalarFieldEnum)[keyof typeof RedemptionBatchScalarFieldEnum]
 
 
 export const RedemptionUseScalarFieldEnum = {
@@ -226,6 +254,122 @@ export const RedeemAttemptScalarFieldEnum = {
 } as const
 
 export type RedeemAttemptScalarFieldEnum = (typeof RedeemAttemptScalarFieldEnum)[keyof typeof RedeemAttemptScalarFieldEnum]
+
+
+export const TestTemplateScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  tagline: 'tagline',
+  description: 'description',
+  coverImage: 'coverImage',
+  status: 'status',
+  accessMode: 'accessMode',
+  pricingMode: 'pricingMode',
+  basePrice: 'basePrice',
+  aiPrice: 'aiPrice',
+  reportStrategy: 'reportStrategy',
+  scoringConfig: 'scoringConfig',
+  sortOrder: 'sortOrder',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TestTemplateScalarFieldEnum = (typeof TestTemplateScalarFieldEnum)[keyof typeof TestTemplateScalarFieldEnum]
+
+
+export const TestQuestionScalarFieldEnum = {
+  id: 'id',
+  testId: 'testId',
+  questionKey: 'questionKey',
+  orderIndex: 'orderIndex',
+  type: 'type',
+  prompt: 'prompt',
+  dimension: 'dimension',
+  config: 'config',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TestQuestionScalarFieldEnum = (typeof TestQuestionScalarFieldEnum)[keyof typeof TestQuestionScalarFieldEnum]
+
+
+export const CouponScalarFieldEnum = {
+  id: 'id',
+  codeNormalized: 'codeNormalized',
+  type: 'type',
+  value: 'value',
+  scope: 'scope',
+  testId: 'testId',
+  minAmount: 'minAmount',
+  maxRedemptions: 'maxRedemptions',
+  redemptionCount: 'redemptionCount',
+  perUserLimit: 'perUserLimit',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
+
+
+export const CouponUseScalarFieldEnum = {
+  id: 'id',
+  couponId: 'couponId',
+  orderId: 'orderId',
+  userId: 'userId',
+  discount: 'discount',
+  createdAt: 'createdAt'
+} as const
+
+export type CouponUseScalarFieldEnum = (typeof CouponUseScalarFieldEnum)[keyof typeof CouponUseScalarFieldEnum]
+
+
+export const TrackedEventScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  displayName: 'displayName',
+  category: 'category',
+  description: 'description',
+  properties: 'properties',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrackedEventScalarFieldEnum = (typeof TrackedEventScalarFieldEnum)[keyof typeof TrackedEventScalarFieldEnum]
+
+
+export const AnalyticsFunnelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  steps: 'steps',
+  windowHours: 'windowHours',
+  pinned: 'pinned',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AnalyticsFunnelScalarFieldEnum = (typeof AnalyticsFunnelScalarFieldEnum)[keyof typeof AnalyticsFunnelScalarFieldEnum]
+
+
+export const AdminAuditLogScalarFieldEnum = {
+  id: 'id',
+  actor: 'actor',
+  action: 'action',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  diff: 'diff',
+  ip: 'ip',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminAuditLogScalarFieldEnum = (typeof AdminAuditLogScalarFieldEnum)[keyof typeof AdminAuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

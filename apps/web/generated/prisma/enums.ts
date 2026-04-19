@@ -68,3 +68,62 @@ export const ShareType = {
 } as const
 
 export type ShareType = (typeof ShareType)[keyof typeof ShareType]
+
+
+export const TestStatus = {
+  draft: 'draft',
+  published: 'published',
+  archived: 'archived'
+} as const
+
+export type TestStatus = (typeof TestStatus)[keyof typeof TestStatus]
+
+
+export const TestAccessMode = {
+  public: 'public',
+  redeem_required: 'redeem_required'
+} as const
+
+export type TestAccessMode = (typeof TestAccessMode)[keyof typeof TestAccessMode]
+
+
+export const TestPricingMode = {
+  free: 'free',
+  paid_unlock: 'paid_unlock',
+  paid_entry: 'paid_entry'
+} as const
+
+export type TestPricingMode = (typeof TestPricingMode)[keyof typeof TestPricingMode]
+
+
+export const QuestionType = {
+  likert_5: 'likert_5',
+  single_choice: 'single_choice',
+  multi_choice: 'multi_choice'
+} as const
+
+export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType]
+
+
+export const CouponType = {
+  percent_off: 'percent_off',
+  amount_off: 'amount_off'
+} as const
+
+export type CouponType = (typeof CouponType)[keyof typeof CouponType]
+
+
+export const CouponScope = {
+  global: 'global',
+  test: 'test'
+} as const
+
+export type CouponScope = (typeof CouponScope)[keyof typeof CouponScope]
+
+
+export const TrackedEventStatus = {
+  active: 'active',
+  deprecated: 'deprecated'
+} as const
+
+export type TrackedEventStatus = (typeof TrackedEventStatus)[keyof typeof TrackedEventStatus]

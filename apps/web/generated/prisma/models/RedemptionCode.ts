@@ -14,7 +14,8 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model RedemptionCode
- * 兑换码（后台可配置：总可兑次数、有效期、启用状态）
+ * 兑换码。新语义 = 测试入口准入凭证；历史老语义（解锁付费报告）在过渡期兼容保留。
+ * testId = null 表示通用（任何 accessMode=redeem_required 的测试均可用）。
  */
 export type RedemptionCodeModel = runtime.Types.Result.DefaultSelection<Prisma.$RedemptionCodePayload>
 
@@ -39,6 +40,8 @@ export type RedemptionCodeSumAggregateOutputType = {
 export type RedemptionCodeMinAggregateOutputType = {
   id: string | null
   codeNormalized: string | null
+  testId: string | null
+  batchId: string | null
   note: string | null
   maxRedemptions: number | null
   redemptionCount: number | null
@@ -51,6 +54,8 @@ export type RedemptionCodeMinAggregateOutputType = {
 export type RedemptionCodeMaxAggregateOutputType = {
   id: string | null
   codeNormalized: string | null
+  testId: string | null
+  batchId: string | null
   note: string | null
   maxRedemptions: number | null
   redemptionCount: number | null
@@ -63,6 +68,8 @@ export type RedemptionCodeMaxAggregateOutputType = {
 export type RedemptionCodeCountAggregateOutputType = {
   id: number
   codeNormalized: number
+  testId: number
+  batchId: number
   note: number
   maxRedemptions: number
   redemptionCount: number
@@ -87,6 +94,8 @@ export type RedemptionCodeSumAggregateInputType = {
 export type RedemptionCodeMinAggregateInputType = {
   id?: true
   codeNormalized?: true
+  testId?: true
+  batchId?: true
   note?: true
   maxRedemptions?: true
   redemptionCount?: true
@@ -99,6 +108,8 @@ export type RedemptionCodeMinAggregateInputType = {
 export type RedemptionCodeMaxAggregateInputType = {
   id?: true
   codeNormalized?: true
+  testId?: true
+  batchId?: true
   note?: true
   maxRedemptions?: true
   redemptionCount?: true
@@ -111,6 +122,8 @@ export type RedemptionCodeMaxAggregateInputType = {
 export type RedemptionCodeCountAggregateInputType = {
   id?: true
   codeNormalized?: true
+  testId?: true
+  batchId?: true
   note?: true
   maxRedemptions?: true
   redemptionCount?: true
@@ -210,6 +223,8 @@ export type RedemptionCodeGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 export type RedemptionCodeGroupByOutputType = {
   id: string
   codeNormalized: string
+  testId: string | null
+  batchId: string | null
   note: string | null
   maxRedemptions: number
   redemptionCount: number
@@ -245,6 +260,8 @@ export type RedemptionCodeWhereInput = {
   NOT?: Prisma.RedemptionCodeWhereInput | Prisma.RedemptionCodeWhereInput[]
   id?: Prisma.StringFilter<"RedemptionCode"> | string
   codeNormalized?: Prisma.StringFilter<"RedemptionCode"> | string
+  testId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
+  batchId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
   note?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
   maxRedemptions?: Prisma.IntFilter<"RedemptionCode"> | number
   redemptionCount?: Prisma.IntFilter<"RedemptionCode"> | number
@@ -252,12 +269,16 @@ export type RedemptionCodeWhereInput = {
   active?: Prisma.BoolFilter<"RedemptionCode"> | boolean
   createdAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
+  test?: Prisma.XOR<Prisma.TestTemplateNullableScalarRelationFilter, Prisma.TestTemplateWhereInput> | null
+  batch?: Prisma.XOR<Prisma.RedemptionBatchNullableScalarRelationFilter, Prisma.RedemptionBatchWhereInput> | null
   uses?: Prisma.RedemptionUseListRelationFilter
 }
 
 export type RedemptionCodeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   codeNormalized?: Prisma.SortOrder
+  testId?: Prisma.SortOrderInput | Prisma.SortOrder
+  batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   redemptionCount?: Prisma.SortOrder
@@ -265,6 +286,8 @@ export type RedemptionCodeOrderByWithRelationInput = {
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  test?: Prisma.TestTemplateOrderByWithRelationInput
+  batch?: Prisma.RedemptionBatchOrderByWithRelationInput
   uses?: Prisma.RedemptionUseOrderByRelationAggregateInput
 }
 
@@ -274,6 +297,8 @@ export type RedemptionCodeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RedemptionCodeWhereInput | Prisma.RedemptionCodeWhereInput[]
   OR?: Prisma.RedemptionCodeWhereInput[]
   NOT?: Prisma.RedemptionCodeWhereInput | Prisma.RedemptionCodeWhereInput[]
+  testId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
+  batchId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
   note?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
   maxRedemptions?: Prisma.IntFilter<"RedemptionCode"> | number
   redemptionCount?: Prisma.IntFilter<"RedemptionCode"> | number
@@ -281,12 +306,16 @@ export type RedemptionCodeWhereUniqueInput = Prisma.AtLeast<{
   active?: Prisma.BoolFilter<"RedemptionCode"> | boolean
   createdAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
+  test?: Prisma.XOR<Prisma.TestTemplateNullableScalarRelationFilter, Prisma.TestTemplateWhereInput> | null
+  batch?: Prisma.XOR<Prisma.RedemptionBatchNullableScalarRelationFilter, Prisma.RedemptionBatchWhereInput> | null
   uses?: Prisma.RedemptionUseListRelationFilter
 }, "id" | "codeNormalized">
 
 export type RedemptionCodeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   codeNormalized?: Prisma.SortOrder
+  testId?: Prisma.SortOrderInput | Prisma.SortOrder
+  batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   redemptionCount?: Prisma.SortOrder
@@ -307,6 +336,8 @@ export type RedemptionCodeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.RedemptionCodeScalarWhereWithAggregatesInput | Prisma.RedemptionCodeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"RedemptionCode"> | string
   codeNormalized?: Prisma.StringWithAggregatesFilter<"RedemptionCode"> | string
+  testId?: Prisma.StringNullableWithAggregatesFilter<"RedemptionCode"> | string | null
+  batchId?: Prisma.StringNullableWithAggregatesFilter<"RedemptionCode"> | string | null
   note?: Prisma.StringNullableWithAggregatesFilter<"RedemptionCode"> | string | null
   maxRedemptions?: Prisma.IntWithAggregatesFilter<"RedemptionCode"> | number
   redemptionCount?: Prisma.IntWithAggregatesFilter<"RedemptionCode"> | number
@@ -326,12 +357,16 @@ export type RedemptionCodeCreateInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  test?: Prisma.TestTemplateCreateNestedOneWithoutRedemptionCodesInput
+  batch?: Prisma.RedemptionBatchCreateNestedOneWithoutCodesInput
   uses?: Prisma.RedemptionUseCreateNestedManyWithoutCodeInput
 }
 
 export type RedemptionCodeUncheckedCreateInput = {
   id?: string
   codeNormalized: string
+  testId?: string | null
+  batchId?: string | null
   note?: string | null
   maxRedemptions?: number
   redemptionCount?: number
@@ -352,12 +387,16 @@ export type RedemptionCodeUpdateInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  test?: Prisma.TestTemplateUpdateOneWithoutRedemptionCodesNestedInput
+  batch?: Prisma.RedemptionBatchUpdateOneWithoutCodesNestedInput
   uses?: Prisma.RedemptionUseUpdateManyWithoutCodeNestedInput
 }
 
 export type RedemptionCodeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  testId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -371,6 +410,8 @@ export type RedemptionCodeUncheckedUpdateInput = {
 export type RedemptionCodeCreateManyInput = {
   id?: string
   codeNormalized: string
+  testId?: string | null
+  batchId?: string | null
   note?: string | null
   maxRedemptions?: number
   redemptionCount?: number
@@ -395,6 +436,8 @@ export type RedemptionCodeUpdateManyMutationInput = {
 export type RedemptionCodeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  testId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -407,6 +450,8 @@ export type RedemptionCodeUncheckedUpdateManyInput = {
 export type RedemptionCodeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   codeNormalized?: Prisma.SortOrder
+  testId?: Prisma.SortOrder
+  batchId?: Prisma.SortOrder
   note?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   redemptionCount?: Prisma.SortOrder
@@ -424,6 +469,8 @@ export type RedemptionCodeAvgOrderByAggregateInput = {
 export type RedemptionCodeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   codeNormalized?: Prisma.SortOrder
+  testId?: Prisma.SortOrder
+  batchId?: Prisma.SortOrder
   note?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   redemptionCount?: Prisma.SortOrder
@@ -436,6 +483,8 @@ export type RedemptionCodeMaxOrderByAggregateInput = {
 export type RedemptionCodeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   codeNormalized?: Prisma.SortOrder
+  testId?: Prisma.SortOrder
+  batchId?: Prisma.SortOrder
   note?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   redemptionCount?: Prisma.SortOrder
@@ -450,9 +499,61 @@ export type RedemptionCodeSumOrderByAggregateInput = {
   redemptionCount?: Prisma.SortOrder
 }
 
+export type RedemptionCodeListRelationFilter = {
+  every?: Prisma.RedemptionCodeWhereInput
+  some?: Prisma.RedemptionCodeWhereInput
+  none?: Prisma.RedemptionCodeWhereInput
+}
+
+export type RedemptionCodeOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type RedemptionCodeScalarRelationFilter = {
   is?: Prisma.RedemptionCodeWhereInput
   isNot?: Prisma.RedemptionCodeWhereInput
+}
+
+export type RedemptionCodeCreateNestedManyWithoutBatchInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput> | Prisma.RedemptionCodeCreateWithoutBatchInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput | Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyBatchInputEnvelope
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+}
+
+export type RedemptionCodeUncheckedCreateNestedManyWithoutBatchInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput> | Prisma.RedemptionCodeCreateWithoutBatchInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput | Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyBatchInputEnvelope
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+}
+
+export type RedemptionCodeUpdateManyWithoutBatchNestedInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput> | Prisma.RedemptionCodeCreateWithoutBatchInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput | Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput[]
+  upsert?: Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutBatchInput | Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutBatchInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyBatchInputEnvelope
+  set?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  disconnect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  delete?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  update?: Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutBatchInput | Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutBatchInput[]
+  updateMany?: Prisma.RedemptionCodeUpdateManyWithWhereWithoutBatchInput | Prisma.RedemptionCodeUpdateManyWithWhereWithoutBatchInput[]
+  deleteMany?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
+}
+
+export type RedemptionCodeUncheckedUpdateManyWithoutBatchNestedInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput> | Prisma.RedemptionCodeCreateWithoutBatchInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput | Prisma.RedemptionCodeCreateOrConnectWithoutBatchInput[]
+  upsert?: Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutBatchInput | Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutBatchInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyBatchInputEnvelope
+  set?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  disconnect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  delete?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  update?: Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutBatchInput | Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutBatchInput[]
+  updateMany?: Prisma.RedemptionCodeUpdateManyWithWhereWithoutBatchInput | Prisma.RedemptionCodeUpdateManyWithWhereWithoutBatchInput[]
+  deleteMany?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
 }
 
 export type RedemptionCodeCreateNestedOneWithoutUsesInput = {
@@ -469,6 +570,119 @@ export type RedemptionCodeUpdateOneRequiredWithoutUsesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RedemptionCodeUpdateToOneWithWhereWithoutUsesInput, Prisma.RedemptionCodeUpdateWithoutUsesInput>, Prisma.RedemptionCodeUncheckedUpdateWithoutUsesInput>
 }
 
+export type RedemptionCodeCreateNestedManyWithoutTestInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput> | Prisma.RedemptionCodeCreateWithoutTestInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutTestInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutTestInput | Prisma.RedemptionCodeCreateOrConnectWithoutTestInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyTestInputEnvelope
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+}
+
+export type RedemptionCodeUncheckedCreateNestedManyWithoutTestInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput> | Prisma.RedemptionCodeCreateWithoutTestInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutTestInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutTestInput | Prisma.RedemptionCodeCreateOrConnectWithoutTestInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyTestInputEnvelope
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+}
+
+export type RedemptionCodeUpdateManyWithoutTestNestedInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput> | Prisma.RedemptionCodeCreateWithoutTestInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutTestInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutTestInput | Prisma.RedemptionCodeCreateOrConnectWithoutTestInput[]
+  upsert?: Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutTestInput | Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutTestInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyTestInputEnvelope
+  set?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  disconnect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  delete?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  update?: Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutTestInput | Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutTestInput[]
+  updateMany?: Prisma.RedemptionCodeUpdateManyWithWhereWithoutTestInput | Prisma.RedemptionCodeUpdateManyWithWhereWithoutTestInput[]
+  deleteMany?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
+}
+
+export type RedemptionCodeUncheckedUpdateManyWithoutTestNestedInput = {
+  create?: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput> | Prisma.RedemptionCodeCreateWithoutTestInput[] | Prisma.RedemptionCodeUncheckedCreateWithoutTestInput[]
+  connectOrCreate?: Prisma.RedemptionCodeCreateOrConnectWithoutTestInput | Prisma.RedemptionCodeCreateOrConnectWithoutTestInput[]
+  upsert?: Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutTestInput | Prisma.RedemptionCodeUpsertWithWhereUniqueWithoutTestInput[]
+  createMany?: Prisma.RedemptionCodeCreateManyTestInputEnvelope
+  set?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  disconnect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  delete?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  connect?: Prisma.RedemptionCodeWhereUniqueInput | Prisma.RedemptionCodeWhereUniqueInput[]
+  update?: Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutTestInput | Prisma.RedemptionCodeUpdateWithWhereUniqueWithoutTestInput[]
+  updateMany?: Prisma.RedemptionCodeUpdateManyWithWhereWithoutTestInput | Prisma.RedemptionCodeUpdateManyWithWhereWithoutTestInput[]
+  deleteMany?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
+}
+
+export type RedemptionCodeCreateWithoutBatchInput = {
+  id?: string
+  codeNormalized: string
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  test?: Prisma.TestTemplateCreateNestedOneWithoutRedemptionCodesInput
+  uses?: Prisma.RedemptionUseCreateNestedManyWithoutCodeInput
+}
+
+export type RedemptionCodeUncheckedCreateWithoutBatchInput = {
+  id?: string
+  codeNormalized: string
+  testId?: string | null
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  uses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutCodeInput
+}
+
+export type RedemptionCodeCreateOrConnectWithoutBatchInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  create: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput>
+}
+
+export type RedemptionCodeCreateManyBatchInputEnvelope = {
+  data: Prisma.RedemptionCodeCreateManyBatchInput | Prisma.RedemptionCodeCreateManyBatchInput[]
+  skipDuplicates?: boolean
+}
+
+export type RedemptionCodeUpsertWithWhereUniqueWithoutBatchInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  update: Prisma.XOR<Prisma.RedemptionCodeUpdateWithoutBatchInput, Prisma.RedemptionCodeUncheckedUpdateWithoutBatchInput>
+  create: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutBatchInput, Prisma.RedemptionCodeUncheckedCreateWithoutBatchInput>
+}
+
+export type RedemptionCodeUpdateWithWhereUniqueWithoutBatchInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  data: Prisma.XOR<Prisma.RedemptionCodeUpdateWithoutBatchInput, Prisma.RedemptionCodeUncheckedUpdateWithoutBatchInput>
+}
+
+export type RedemptionCodeUpdateManyWithWhereWithoutBatchInput = {
+  where: Prisma.RedemptionCodeScalarWhereInput
+  data: Prisma.XOR<Prisma.RedemptionCodeUpdateManyMutationInput, Prisma.RedemptionCodeUncheckedUpdateManyWithoutBatchInput>
+}
+
+export type RedemptionCodeScalarWhereInput = {
+  AND?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
+  OR?: Prisma.RedemptionCodeScalarWhereInput[]
+  NOT?: Prisma.RedemptionCodeScalarWhereInput | Prisma.RedemptionCodeScalarWhereInput[]
+  id?: Prisma.StringFilter<"RedemptionCode"> | string
+  codeNormalized?: Prisma.StringFilter<"RedemptionCode"> | string
+  testId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
+  batchId?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
+  note?: Prisma.StringNullableFilter<"RedemptionCode"> | string | null
+  maxRedemptions?: Prisma.IntFilter<"RedemptionCode"> | number
+  redemptionCount?: Prisma.IntFilter<"RedemptionCode"> | number
+  expiresAt?: Prisma.DateTimeNullableFilter<"RedemptionCode"> | Date | string | null
+  active?: Prisma.BoolFilter<"RedemptionCode"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"RedemptionCode"> | Date | string
+}
+
 export type RedemptionCodeCreateWithoutUsesInput = {
   id?: string
   codeNormalized: string
@@ -479,11 +693,15 @@ export type RedemptionCodeCreateWithoutUsesInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  test?: Prisma.TestTemplateCreateNestedOneWithoutRedemptionCodesInput
+  batch?: Prisma.RedemptionBatchCreateNestedOneWithoutCodesInput
 }
 
 export type RedemptionCodeUncheckedCreateWithoutUsesInput = {
   id?: string
   codeNormalized: string
+  testId?: string | null
+  batchId?: string | null
   note?: string | null
   maxRedemptions?: number
   redemptionCount?: number
@@ -519,11 +737,177 @@ export type RedemptionCodeUpdateWithoutUsesInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  test?: Prisma.TestTemplateUpdateOneWithoutRedemptionCodesNestedInput
+  batch?: Prisma.RedemptionBatchUpdateOneWithoutCodesNestedInput
 }
 
 export type RedemptionCodeUncheckedUpdateWithoutUsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  testId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RedemptionCodeCreateWithoutTestInput = {
+  id?: string
+  codeNormalized: string
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  batch?: Prisma.RedemptionBatchCreateNestedOneWithoutCodesInput
+  uses?: Prisma.RedemptionUseCreateNestedManyWithoutCodeInput
+}
+
+export type RedemptionCodeUncheckedCreateWithoutTestInput = {
+  id?: string
+  codeNormalized: string
+  batchId?: string | null
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  uses?: Prisma.RedemptionUseUncheckedCreateNestedManyWithoutCodeInput
+}
+
+export type RedemptionCodeCreateOrConnectWithoutTestInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  create: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput>
+}
+
+export type RedemptionCodeCreateManyTestInputEnvelope = {
+  data: Prisma.RedemptionCodeCreateManyTestInput | Prisma.RedemptionCodeCreateManyTestInput[]
+  skipDuplicates?: boolean
+}
+
+export type RedemptionCodeUpsertWithWhereUniqueWithoutTestInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  update: Prisma.XOR<Prisma.RedemptionCodeUpdateWithoutTestInput, Prisma.RedemptionCodeUncheckedUpdateWithoutTestInput>
+  create: Prisma.XOR<Prisma.RedemptionCodeCreateWithoutTestInput, Prisma.RedemptionCodeUncheckedCreateWithoutTestInput>
+}
+
+export type RedemptionCodeUpdateWithWhereUniqueWithoutTestInput = {
+  where: Prisma.RedemptionCodeWhereUniqueInput
+  data: Prisma.XOR<Prisma.RedemptionCodeUpdateWithoutTestInput, Prisma.RedemptionCodeUncheckedUpdateWithoutTestInput>
+}
+
+export type RedemptionCodeUpdateManyWithWhereWithoutTestInput = {
+  where: Prisma.RedemptionCodeScalarWhereInput
+  data: Prisma.XOR<Prisma.RedemptionCodeUpdateManyMutationInput, Prisma.RedemptionCodeUncheckedUpdateManyWithoutTestInput>
+}
+
+export type RedemptionCodeCreateManyBatchInput = {
+  id?: string
+  codeNormalized: string
+  testId?: string | null
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RedemptionCodeUpdateWithoutBatchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  test?: Prisma.TestTemplateUpdateOneWithoutRedemptionCodesNestedInput
+  uses?: Prisma.RedemptionUseUpdateManyWithoutCodeNestedInput
+}
+
+export type RedemptionCodeUncheckedUpdateWithoutBatchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  testId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutCodeNestedInput
+}
+
+export type RedemptionCodeUncheckedUpdateManyWithoutBatchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  testId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RedemptionCodeCreateManyTestInput = {
+  id?: string
+  codeNormalized: string
+  batchId?: string | null
+  note?: string | null
+  maxRedemptions?: number
+  redemptionCount?: number
+  expiresAt?: Date | string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RedemptionCodeUpdateWithoutTestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  batch?: Prisma.RedemptionBatchUpdateOneWithoutCodesNestedInput
+  uses?: Prisma.RedemptionUseUpdateManyWithoutCodeNestedInput
+}
+
+export type RedemptionCodeUncheckedUpdateWithoutTestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
+  redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uses?: Prisma.RedemptionUseUncheckedUpdateManyWithoutCodeNestedInput
+}
+
+export type RedemptionCodeUncheckedUpdateManyWithoutTestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  codeNormalized?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   redemptionCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -567,6 +951,8 @@ export type RedemptionCodeCountOutputTypeCountUsesArgs<ExtArgs extends runtime.T
 export type RedemptionCodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   codeNormalized?: boolean
+  testId?: boolean
+  batchId?: boolean
   note?: boolean
   maxRedemptions?: boolean
   redemptionCount?: boolean
@@ -574,6 +960,8 @@ export type RedemptionCodeSelect<ExtArgs extends runtime.Types.Extensions.Intern
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
   uses?: boolean | Prisma.RedemptionCode$usesArgs<ExtArgs>
   _count?: boolean | Prisma.RedemptionCodeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["redemptionCode"]>
@@ -581,6 +969,8 @@ export type RedemptionCodeSelect<ExtArgs extends runtime.Types.Extensions.Intern
 export type RedemptionCodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   codeNormalized?: boolean
+  testId?: boolean
+  batchId?: boolean
   note?: boolean
   maxRedemptions?: boolean
   redemptionCount?: boolean
@@ -588,11 +978,15 @@ export type RedemptionCodeSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
 }, ExtArgs["result"]["redemptionCode"]>
 
 export type RedemptionCodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   codeNormalized?: boolean
+  testId?: boolean
+  batchId?: boolean
   note?: boolean
   maxRedemptions?: boolean
   redemptionCount?: boolean
@@ -600,11 +994,15 @@ export type RedemptionCodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
 }, ExtArgs["result"]["redemptionCode"]>
 
 export type RedemptionCodeSelectScalar = {
   id?: boolean
   codeNormalized?: boolean
+  testId?: boolean
+  batchId?: boolean
   note?: boolean
   maxRedemptions?: boolean
   redemptionCount?: boolean
@@ -614,22 +1012,34 @@ export type RedemptionCodeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type RedemptionCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codeNormalized" | "note" | "maxRedemptions" | "redemptionCount" | "expiresAt" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["redemptionCode"]>
+export type RedemptionCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codeNormalized" | "testId" | "batchId" | "note" | "maxRedemptions" | "redemptionCount" | "expiresAt" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["redemptionCode"]>
 export type RedemptionCodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
   uses?: boolean | Prisma.RedemptionCode$usesArgs<ExtArgs>
   _count?: boolean | Prisma.RedemptionCodeCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type RedemptionCodeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type RedemptionCodeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type RedemptionCodeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
+}
+export type RedemptionCodeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  test?: boolean | Prisma.RedemptionCode$testArgs<ExtArgs>
+  batch?: boolean | Prisma.RedemptionCode$batchArgs<ExtArgs>
+}
 
 export type $RedemptionCodePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RedemptionCode"
   objects: {
+    test: Prisma.$TestTemplatePayload<ExtArgs> | null
+    batch: Prisma.$RedemptionBatchPayload<ExtArgs> | null
     uses: Prisma.$RedemptionUsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     codeNormalized: string
+    testId: string | null
+    batchId: string | null
     note: string | null
     maxRedemptions: number
     redemptionCount: number
@@ -1031,6 +1441,8 @@ readonly fields: RedemptionCodeFieldRefs;
  */
 export interface Prisma__RedemptionCodeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  test<T extends Prisma.RedemptionCode$testArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RedemptionCode$testArgs<ExtArgs>>): Prisma.Prisma__TestTemplateClient<runtime.Types.Result.GetResult<Prisma.$TestTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  batch<T extends Prisma.RedemptionCode$batchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RedemptionCode$batchArgs<ExtArgs>>): Prisma.Prisma__RedemptionBatchClient<runtime.Types.Result.GetResult<Prisma.$RedemptionBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   uses<T extends Prisma.RedemptionCode$usesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RedemptionCode$usesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RedemptionUsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1063,6 +1475,8 @@ export interface Prisma__RedemptionCodeClient<T, Null = never, ExtArgs extends r
 export interface RedemptionCodeFieldRefs {
   readonly id: Prisma.FieldRef<"RedemptionCode", 'String'>
   readonly codeNormalized: Prisma.FieldRef<"RedemptionCode", 'String'>
+  readonly testId: Prisma.FieldRef<"RedemptionCode", 'String'>
+  readonly batchId: Prisma.FieldRef<"RedemptionCode", 'String'>
   readonly note: Prisma.FieldRef<"RedemptionCode", 'String'>
   readonly maxRedemptions: Prisma.FieldRef<"RedemptionCode", 'Int'>
   readonly redemptionCount: Prisma.FieldRef<"RedemptionCode", 'Int'>
@@ -1324,6 +1738,10 @@ export type RedemptionCodeCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    */
   data: Prisma.RedemptionCodeCreateManyInput | Prisma.RedemptionCodeCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionCodeIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1394,6 +1812,10 @@ export type RedemptionCodeUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * Limit how many RedemptionCodes to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionCodeIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1460,6 +1882,44 @@ export type RedemptionCodeDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many RedemptionCodes to delete.
    */
   limit?: number
+}
+
+/**
+ * RedemptionCode.test
+ */
+export type RedemptionCode$testArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TestTemplate
+   */
+  select?: Prisma.TestTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TestTemplate
+   */
+  omit?: Prisma.TestTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TestTemplateInclude<ExtArgs> | null
+  where?: Prisma.TestTemplateWhereInput
+}
+
+/**
+ * RedemptionCode.batch
+ */
+export type RedemptionCode$batchArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RedemptionBatch
+   */
+  select?: Prisma.RedemptionBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RedemptionBatch
+   */
+  omit?: Prisma.RedemptionBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionBatchInclude<ExtArgs> | null
+  where?: Prisma.RedemptionBatchWhereInput
 }
 
 /**

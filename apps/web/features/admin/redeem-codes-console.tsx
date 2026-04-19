@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Ban, Check, Copy, Download, Pencil, Plus, ToggleLeft, ToggleRight, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { readAdminJson } from "@/lib/admin-api-json";
@@ -124,6 +124,25 @@ export function RedeemCodesConsole() {
     }
   }
 
+  async function toggleActive(row: Item) {
+    try {
+      const res = await fetch(`/api/admin/redeem-codes/${row.id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active: !row.active }),
+      });
+      if (!res.ok) {
+        showToast("操作失败");
+        return;
+      }
+      showToast(row.active ? "已停用" : "已启用");
+      void load();
+    } catch {
+      showToast("操作失败");
+    }
+  }
+
   const totalPages = data ? Math.max(1, Math.ceil(data.total / limit)) : 1;
 
   return (
@@ -142,14 +161,23 @@ export function RedeemCodesConsole() {
             创建与维护发放码，配置可核销次数与有效期。用户侧凭码解锁当前报告；已解锁权益不因删除记录而回滚。
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setCreateOpen(true)}
-          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#7C5CFC] px-5 text-[14px] font-semibold text-[#F5F5F7] shadow-[0_0_20px_rgba(124,92,252,0.2)] transition-transform active:scale-[0.99] md:self-auto"
-        >
-          <Plus className="h-4 w-4" strokeWidth={2} />
-          新建兑换码
-        </button>
+        <div className="flex shrink-0 items-center gap-2 self-start md:self-auto">
+          <a
+            href="/api/admin/redeem-codes/export.csv"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#1A1A24] px-4 text-[14px] font-medium text-[#8E8E93] ring-1 ring-[#2A2A36] transition-colors hover:bg-[#22222e] hover:text-[#F5F5F7]"
+          >
+            <Download className="h-4 w-4" strokeWidth={2} />
+            导出 CSV
+          </a>
+          <button
+            type="button"
+            onClick={() => setCreateOpen(true)}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#7C5CFC] px-5 text-[14px] font-semibold text-[#F5F5F7] shadow-[0_0_20px_rgba(124,92,252,0.2)] transition-transform active:scale-[0.99]"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2} />
+            新建兑换码
+          </button>
+        </div>
       </div>
 
       {data ? (
@@ -254,6 +282,16 @@ export function RedeemCodesConsole() {
                           </IconBtn>
                           <IconBtn label="编辑" onClick={() => setEditRow(row)}>
                             <Pencil className="h-4 w-4" />
+                          </IconBtn>
+                          <IconBtn
+                            label={row.active ? "停用" : "启用"}
+                            onClick={() => void toggleActive(row)}
+                          >
+                            {row.active ? (
+                              <Ban className="h-4 w-4" />
+                            ) : (
+                              <ToggleRight className="h-4 w-4 text-[#34C759]" />
+                            )}
                           </IconBtn>
                           <IconBtn
                             label="删除"
