@@ -1,49 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-
-/**
- * 从某一目录逐级向上，每一层都尝试 `{当前目录}/content`。
- * - process.cwd() 可在任意工作目录启动 next 时命中 apps/web/content 或 仓库根/content
- * - import.meta.url 在打包后指向 .next/server/chunks/xxx.js，逐级向上可命中 apps/web/content
- */
-function enumerateContentRoots(startDir: string, maxHops = 14): string[] {
-  const roots: string[] = [];
-  let cur = startDir;
-  for (let i = 0; i < maxHops; i++) {
-    roots.push(join(cur, "content"));
-    const parent = dirname(cur);
-    if (parent === cur) break;
-    cur = parent;
-  }
-  return roots;
-}
-
-function allContentDirs(): string[] {
-  const seen = new Set<string>();
-  const ordered: string[] = [];
-  const push = (p: string) => {
-    const norm = join(p); // normalize
-    if (!seen.has(norm)) {
-      seen.add(norm);
-      ordered.push(norm);
-    }
-  };
-
-  const envDir = process.env.CONTENT_MD_DIR?.trim();
-  if (envDir) push(envDir);
-
-  for (const r of enumerateContentRoots(process.cwd())) push(r);
-
-  try {
-    const bundledFile = dirname(fileURLToPath(import.meta.url));
-    for (const r of enumerateContentRoots(bundledFile)) push(r);
-  } catch {
-    /* noop */
-  }
-
-  return ordered;
-}
+import { RAW_CONTENT } from "./content-raw";
 
 /** 中文星座名 → 文件 slug */
 const ZODIAC_SLUG: Record<string, string> = {
@@ -155,30 +110,25 @@ function parseContent(md: string): ContentSection[] {
   return sections;
 }
 
-function readContent(slug: string): ContentSection[] {
-  const fileName = `${slug}.md`;
-  for (const dir of allContentDirs()) {
-    const filePath = join(dir, fileName);
-    try {
-      if (!existsSync(filePath)) continue;
-      const md = readFileSync(filePath, "utf-8");
-      const sections = parseContent(md);
-      if (sections.length > 0) return sections;
-    } catch {
-      continue;
-    }
-  }
-  return [];
+/** 解析结果缓存（模块级别，单次构建内只解析一次） */
+const cache = new Map<string, ContentSection[]>();
+
+function getContent(slug: string): ContentSection[] {
+  if (cache.has(slug)) return cache.get(slug)!;
+  const md = RAW_CONTENT[slug];
+  const sections = md ? parseContent(md) : [];
+  cache.set(slug, sections);
+  return sections;
 }
 
 /** 根据 MBTI 类型（如 "INFP"）读取内容 */
 export function getMbtiContent(mbtiType: string): ContentSection[] {
-  return readContent(mbtiType.toLowerCase());
+  return getContent(mbtiType.toLowerCase());
 }
 
 /** 根据中文星座名（如 "白羊座"）读取内容 */
 export function getZodiacContent(sunSign: string): ContentSection[] {
   const slug = ZODIAC_SLUG[sunSign];
   if (!slug) return [];
-  return readContent(slug);
+  return getContent(slug);
 }
