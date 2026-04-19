@@ -9,8 +9,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit --project tsconfig.typecheck.json",
     "prisma:generate": "prisma generate --config prisma.config.ts",
-    "db:push": "prisma db push --config prisma.config.ts",
-    "db:sql:report-testid": "prisma db execute --file ../../prisma/sql/add_report_test_id.sql --config prisma.config.ts",
+    "db:push": "node scripts/validate-database-url.js && prisma db push --config prisma.config.ts",
+    "db:sql:report-testid": "node scripts/validate-database-url.js && prisma db execute --file ../../prisma/sql/add_report_test_id.sql --config prisma.config.ts",
     "seed:mbti": "node scripts/seed-mbti-template.ts"
   },
   "dependencies": {
