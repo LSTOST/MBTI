@@ -1,13 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { clearReportHistoryAction } from "@/app/actions/clear-report-history";
 import { MBTI_ADVANCED_PROGRESS_KEY, MBTI_INTAKE_KEY, MBTI_PROGRESS_KEY } from "@/lib/mbti-storage";
 
 export function ClearHistoryButton() {
-  const router = useRouter();
   const [busy, setBusy] = useState(false);
 
   async function onClear() {
@@ -16,7 +14,11 @@ export function ClearHistoryButton() {
     }
     setBusy(true);
     try {
-      await clearReportHistoryAction();
+      const result = await clearReportHistoryAction();
+      if (!result.ok) {
+        window.alert(`清除失败：${result.message}`);
+        return;
+      }
       try {
         window.localStorage.removeItem(MBTI_INTAKE_KEY);
         window.localStorage.removeItem(MBTI_PROGRESS_KEY);
@@ -24,7 +26,8 @@ export function ClearHistoryButton() {
       } catch {
         /* ignore */
       }
-      router.refresh();
+      /** router.refresh() 在部分环境下不会刷新本页的 RSC 数据；硬跳转保证列表与服务器一致 */
+      window.location.href = "/";
     } finally {
       setBusy(false);
     }

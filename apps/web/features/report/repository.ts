@@ -843,14 +843,21 @@ export async function markReportUnlockedViaRedeem(reportKey: string, userId: str
 }
 
 export async function clearAllReportData() {
-  await prisma.redemptionUse.deleteMany();
-  await prisma.redeemAttempt.deleteMany();
-  await prisma.redemptionCode.deleteMany();
-  await prisma.shareEvent.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.aiReport.deleteMany();
-  await prisma.report.deleteMany();
-  await prisma.quizAnswer.deleteMany();
-  await prisma.quizAttempt.deleteMany();
-  await prisma.user.deleteMany();
+  await prisma.$transaction(
+    async (tx) => {
+      /** CouponUse.orderId → Order；必须先删，否则会外键阻塞 Order */
+      await tx.couponUse.deleteMany();
+      await tx.redemptionUse.deleteMany();
+      await tx.redeemAttempt.deleteMany();
+      await tx.redemptionCode.deleteMany();
+      await tx.shareEvent.deleteMany();
+      await tx.order.deleteMany();
+      await tx.aiReport.deleteMany();
+      await tx.report.deleteMany();
+      await tx.quizAnswer.deleteMany();
+      await tx.quizAttempt.deleteMany();
+      await tx.user.deleteMany();
+    },
+    { timeout: 60_000 },
+  );
 }
