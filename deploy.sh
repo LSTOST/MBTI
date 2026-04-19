@@ -34,8 +34,8 @@ if [ -z "${DATABASE_URL:-}" ]; then
   exit 1
 fi
 
-echo "🔧 安装依赖..."
-npm --prefix apps/web install --omit=dev
+echo "🔧 安装依赖（含 devDependencies：Next 构建需要 Tailwind / TS / ESLint 等）..."
+npm --prefix apps/web install
 
 echo "🗄️  同步数据库结构（与 prisma/schema.prisma 对齐）..."
 npm --prefix apps/web run db:push
@@ -45,6 +45,9 @@ npm --prefix apps/web run db:sql:report-testid
 
 echo "🏗️  构建项目..."
 npm run build
+
+echo "🧹 移除 devDependencies（运行时不需要，缩小 node_modules）..."
+npm --prefix apps/web prune --omit=dev
 
 echo "🔄 重启服务..."
 pm2 restart all
