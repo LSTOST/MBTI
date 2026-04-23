@@ -151,7 +151,7 @@ export function IntakeForm() {
           </Link>
         </header>
 
-        <div className="flex-1 px-6 pb-40 pt-8">
+        <div className="flex-1 px-6 pb-10 pt-8">
           <section className="mb-12">
             <label
               htmlFor="intake-nickname"
@@ -313,30 +313,25 @@ export function IntakeForm() {
             <p className="mt-3 text-[12px] text-[#48484A]">仅影响文案口吻，不参与匹配算法。</p>
           </section>
 
-          <section>
-            <span className="mb-4 block text-[15px] font-medium text-[#F5F5F7]">
-              关于 MBTI
-            </span>
-            <p className="text-[13px] leading-[1.5] text-[#8E8E93]">
-              MBTI 类型由下一步测评题目生成，无需在此填写。
-            </p>
-          </section>
-
           {error ? <p className="mt-8 text-[13px] text-[#FF453A]">{error}</p> : null}
-        </div>
 
-        <div className="fixed bottom-0 left-0 right-0 z-10 mx-auto max-w-[428px] bg-gradient-to-t from-[#0A0A0F] via-[#0A0A0F] to-transparent px-6 pb-[calc(env(safe-area-inset-bottom,12px)+12px)] pt-4">
-          <button
-            type="submit"
-            disabled={!isComplete}
-            className={`h-[56px] w-full rounded-[24px] text-[17px] font-semibold transition-all duration-300 ${
-              isComplete
-                ? "bg-[#7C5CFC] text-[#F5F5F7] shadow-[0_0_24px_rgba(124,92,252,0.25)] active:scale-[0.98]"
-                : "bg-[#1A1A24] text-[#48484A]"
-            }`}
-          >
-            继续
-          </button>
+          {/*
+            与首页「开始测试」统一：最大 311px、居中、56px 高度、紧贴内容下方而非固定在视口底端，
+            使首屏纵向重心与首页保持一致的上-中视觉位置。
+          */}
+          <div className="mt-10 flex justify-center">
+            <button
+              type="submit"
+              disabled={!isComplete}
+              className={`h-[56px] w-full max-w-[311px] rounded-[24px] text-[17px] font-semibold transition-all duration-300 ${
+                isComplete
+                  ? "bg-[#7C5CFC] text-[#F5F5F7] shadow-[0_0_24px_rgba(124,92,252,0.25)] active:scale-[0.98]"
+                  : "bg-[#1A1A24] text-[#48484A]"
+              }`}
+            >
+              继续
+            </button>
+          </div>
         </div>
       </form>
     </main>

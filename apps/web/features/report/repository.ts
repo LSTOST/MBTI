@@ -338,9 +338,15 @@ export async function createReportFromSubmission(input: CreateReportRequest, use
   return prismaReportToRecord(row);
 }
 
-export async function listReports() {
+/**
+ * 仅返回当前匿名用户（mbti_uid cookie）名下的报告。
+ * 无 userId 时返回 []，避免历史数据跨用户泄漏。
+ */
+export async function listReports(userId: string | undefined) {
+  if (!userId) return [];
   try {
     const rows = await prisma.report.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -842,21 +848,23 @@ export async function markReportUnlockedViaRedeem(reportKey: string, userId: str
   return getReportView(report.id);
 }
 
-export async function clearAllReportData() {
+/**
+ * 只清当前匿名用户自己的测试历史，绝不触及全库或后台发行的资产（码/优惠券/批次）。
+ * 依赖 schema 中的 Cascade：删 Report 会自动连带 Order / AiReport / ShareEvent /
+ * RedemptionUse / RedeemAttempt；删 QuizAttempt 会连带 QuizAnswer。
+ * CouponUse.orderId 没有 FK 约束，必须按 userId 显式清除。
+ * 保留 User 行：Cookie 90 天有效，用户清除后可继续在同一匿名身份下重测。
+ */
+export async function clearUserReportData(userId: string) {
+  if (!userId) {
+    throw new Error("missing userId");
+  }
   await prisma.$transaction(
     async (tx) => {
-      /** CouponUse.orderId → Order；必须先删，否则会外键阻塞 Order */
-      await tx.couponUse.deleteMany();
-      await tx.redemptionUse.deleteMany();
-      await tx.redeemAttempt.deleteMany();
-      await tx.redemptionCode.deleteMany();
-      await tx.shareEvent.deleteMany();
-      await tx.order.deleteMany();
-      await tx.aiReport.deleteMany();
-      await tx.report.deleteMany();
-      await tx.quizAnswer.deleteMany();
-      await tx.quizAttempt.deleteMany();
-      await tx.user.deleteMany();
+      await tx.couponUse.deleteMany({ where: { userId } });
+      await tx.shareEvent.deleteMany({ where: { userId } });
+      await tx.quizAttempt.deleteMany({ where: { userId } });
+      await tx.report.deleteMany({ where: { userId } });
     },
     { timeout: 60_000 },
   );

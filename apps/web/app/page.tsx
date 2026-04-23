@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 import { HeroVisual } from "@/components/hero-visual";
@@ -6,8 +7,12 @@ export const dynamic = "force-dynamic";
 import { ClearHistoryButton } from "@/features/home/clear-history-button";
 import { listReports } from "@/features/report/repository";
 
+const USER_COOKIE = "mbti_uid";
+
 export default async function LandingPage() {
-  const reports = await listReports();
+  const jar = await cookies();
+  const userId = jar.get(USER_COOKIE)?.value;
+  const reports = await listReports(userId);
 
   return (
     <main className="relative mx-auto flex w-full max-w-[428px] flex-col bg-[#0A0A0F]">
@@ -18,10 +23,10 @@ export default async function LandingPage() {
 
         <section className="relative z-10 -mt-11 flex min-h-0 flex-1 flex-col items-center px-6 sm:-mt-[3.25rem]">
           {/*
-            双 flex-1 弹簧：标题上下均分留白，整体落在首屏纵向更靠中的位置，避免大块空白全堆在副文案与按钮之间；
-            主操作区仍固定在列底，兼顾拇指热区。
+            双弹簧把 header + 主操作区作为一组整体垂直居中（标题位置保持原样）；
+            按钮紧跟副文案下方（原先由 flex-1 撑开的空白被按钮+人数占据），不再顶到列底。
           */}
-          <div className="flex min-h-0 w-full max-w-[340px] flex-1 flex-col">
+          <div className="flex min-h-0 w-full max-w-[340px] flex-1 flex-col items-center">
             <div className="min-h-0 flex-1" aria-hidden />
             <header className="flex shrink-0 flex-col items-center">
               <h1 className="flex w-full flex-col items-center gap-2.5 text-center text-balance">
@@ -38,37 +43,35 @@ export default async function LandingPage() {
                   MBTI × 星座
                 </span>
                 <span className="block text-[15px] font-normal leading-[1.75] text-[#8E8E93]">
-                  你最容易对谁心动，又适合和谁走得久远
+                  你最容易对谁心动，又会和谁走得久远
                 </span>
               </p>
             </header>
-            <div className="min-h-0 flex-1" aria-hidden />
 
-            <div className="shrink-0 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] pt-2">
-              <div className="flex w-full flex-col items-center">
-                <Link
-                  href="/start"
-                  className="inline-flex h-[56px] w-full max-w-[311px] items-center justify-center rounded-[24px] bg-[#7C5CFC] text-[17px] font-semibold text-[#F5F5F7] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C5CFC] active:scale-[0.98]"
-                  style={{ boxShadow: "0 0 24px rgba(124, 92, 252, 0.25)" }}
+            <div className="mt-10 flex w-full shrink-0 flex-col items-center">
+              <Link
+                href="/start"
+                className="inline-flex h-[56px] w-full max-w-[311px] items-center justify-center rounded-[24px] bg-[#7C5CFC] text-[17px] font-semibold text-[#F5F5F7] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C5CFC] active:scale-[0.98]"
+                style={{ boxShadow: "0 0 24px rgba(124, 92, 252, 0.25)" }}
+              >
+                开始测试
+              </Link>
+              <p className="mt-3.5 text-center text-[12px] leading-[1.6] text-[#48484A]">
+                已有 12,580 人完成测试
+              </p>
+              {reports.length > 0 ? (
+                <a
+                  href="#history"
+                  className="mt-5 flex items-center gap-1 text-[13px] leading-normal text-[#8E8E93] transition-colors active:text-[#F5F5F7]"
                 >
-                  开始测试
-                </Link>
-                <p className="mt-3.5 text-center text-[12px] leading-[1.6] text-[#48484A]">
-                  已有 12,580 人完成测试
-                </p>
-                {reports.length > 0 ? (
-                  <a
-                    href="#history"
-                    className="mt-5 flex items-center gap-1 text-[13px] leading-normal text-[#8E8E93] transition-colors active:text-[#F5F5F7]"
-                  >
-                    <span>查看历史记录</span>
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="translate-y-px">
-                      <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                  </a>
-                ) : null}
-              </div>
+                  <span>查看历史记录</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="translate-y-px">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </a>
+              ) : null}
             </div>
+            <div className="min-h-0 flex-1" aria-hidden />
           </div>
         </section>
       </div>
