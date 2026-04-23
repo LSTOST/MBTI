@@ -8,7 +8,13 @@ type RevealProps = {
   className?: string;
   delay?: number;
   y?: number;
-  amount?: number;
+  /**
+   * IntersectionObserver 触发阈值。
+   * "some" = 任意可见即触发；数值 0-1 = 元素的该比例可见才触发。
+   * 注意：数值阈值对「比视口高的大模块」会永远达不到，导致内容停留在 opacity:0。
+   * 此处默认 "some"，长模块（如 MBTI/星座深度解读）才能在滚入首屏时正常显露。
+   */
+  amount?: number | "some" | "all";
 };
 
 export function Reveal({
@@ -16,7 +22,7 @@ export function Reveal({
   className,
   delay = 0,
   y = 28,
-  amount = 0.25,
+  amount = "some",
 }: RevealProps) {
   return (
     <motion.div

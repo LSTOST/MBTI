@@ -26,8 +26,11 @@ export function ClearHistoryButton() {
       } catch {
         /* ignore */
       }
-      /** router.refresh() 在部分环境下不会刷新本页的 RSC 数据；硬跳转保证列表与服务器一致 */
-      window.location.href = "/";
+      /**
+       * router.refresh() / window.location.href 都可能被 bfcache 还原旧 RSC 快照；
+       * 带唯一 query 走 replace，确保浏览器把本页当全新请求重新拉 RSC，且不可回退到脏态。
+       */
+      window.location.replace(`/?cleared=${Date.now()}`);
     } finally {
       setBusy(false);
     }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { clearAllReportData } from "@/features/report/repository";
+import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 
 export type ClearReportHistoryResult =
@@ -22,6 +23,13 @@ function describeClearError(e: unknown): string {
 export async function clearReportHistoryAction(): Promise<ClearReportHistoryResult> {
   try {
     await clearAllReportData();
+
+    /** 事务声称成功但 Report 仍有残留 → 立刻暴露，避免前端显示成功却列表依旧 */
+    const remaining = await prisma.report.count();
+    if (remaining > 0) {
+      return { ok: false, message: `仍有 ${remaining} 条报告未被清除，请检查外键或数据库连接` };
+    }
+
     revalidatePath("/");
     return { ok: true };
   } catch (e) {

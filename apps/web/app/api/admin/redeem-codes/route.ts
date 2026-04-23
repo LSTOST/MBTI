@@ -5,6 +5,10 @@ import { prisma } from "@/lib/db";
 import { assertAdminAuthorized } from "@/lib/admin-redeem-auth";
 import { generateRedeemCode, normalizeRedeemCode } from "@/lib/redeem-code";
 
+/** 管理后台列表必须实时：禁止 Next.js 对 GET 做任何形式的缓存 */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const createSchema = z.object({
   code: z.string().optional(),
   maxRedemptions: z.coerce.number().int().positive().max(1_000_000),

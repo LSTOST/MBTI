@@ -2,11 +2,8 @@
 
 import { Check, Lock, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
-
-import { analyticsEvents, trackEvent } from "@/lib/analytics";
 
 const WECHAT_OA_NAME = "知我实验室";
 const WECHAT_REPLY_KEYWORD = "兑换码";
@@ -37,33 +34,6 @@ const primaryRedeemBtn =
 function qrSrc(): string {
   const p = process.env.NEXT_PUBLIC_WECHAT_OA_QR_PATH?.trim();
   return p && p.startsWith("/") ? p : DEFAULT_QR_PATH;
-}
-
-function RedeemGeneratingBody({ titleId }: { titleId: string }) {
-  return (
-    <div className="flex flex-col items-center px-6 py-10">
-      <div
-        className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[rgba(124,92,252,0.18)]"
-        aria-hidden
-      >
-        <Lock className="h-6 w-6 text-[#7C5CFC]" strokeWidth={1.75} />
-      </div>
-      <h3
-        id={titleId}
-        className="text-center text-[18px] font-semibold leading-tight tracking-tight text-[#F5F5F7]"
-      >
-        正在生成深度报告
-      </h3>
-      <p className="mt-2 max-w-[260px] text-center text-[12px] leading-relaxed text-[#8E8E93]">
-        正在为你撰写，请稍候片刻
-      </p>
-      <div className={`mt-8 w-full ${redeemColumnClass}`}>
-        <div className="redeem-generate-progress-track" role="progressbar" aria-valuetext="生成中" aria-busy="true">
-          <div className="redeem-generate-progress-fill" />
-        </div>
-      </div>
-    </div>
-  );
 }
 
 type PaymentProps = {
@@ -161,35 +131,30 @@ function RedeemBody({
   open,
   reportId,
   onRedeemSuccess,
-  onClose,
   titleId,
   onBusyChange,
 }: Omit<RedeemProps, "mode"> & {
   titleId: string;
   onBusyChange: (busy: boolean) => void;
 }) {
-  const router = useRouter();
   const [code, setCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
-  const [generatingAi, setGeneratingAi] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    onBusyChange(redeeming || generatingAi);
-  }, [redeeming, generatingAi, onBusyChange]);
+    onBusyChange(redeeming);
+  }, [redeeming, onBusyChange]);
 
   useEffect(() => {
     if (!open) return;
     setCode("");
     setError("");
     setRedeeming(false);
-    setGeneratingAi(false);
   }, [open, reportId]);
 
   async function submit() {
     setError("");
     setRedeeming(true);
-    let startedAi = false;
     try {
       const res = await fetch(`/api/reports/${reportId}/redeem`, {
         method: "POST",
@@ -201,33 +166,13 @@ function RedeemBody({
         throw new Error(data.error || "兑换失败");
       }
 
-      setRedeeming(false);
-      startedAi = true;
-      setGeneratingAi(true);
-
-      const aiRes = await fetch(`/api/reports/${reportId}/ai`, { method: "POST" });
-      const aiData = (await aiRes.json()) as { error?: string };
-      if (!aiRes.ok) {
-        throw new Error(aiData.error || "深度报告生成失败");
-      }
-
+      /** 深度报告走本地 markdown，兑换成功后直接跳转，不再触发 AI 生成 */
       onRedeemSuccess();
     } catch (e) {
-      if (startedAi) {
-        trackEvent(analyticsEvents.aiFailed, { reportId });
-        router.refresh();
-        onClose();
-      } else {
-        setError(e instanceof Error ? e.message : "操作失败");
-      }
+      setError(e instanceof Error ? e.message : "操作失败");
     } finally {
       setRedeeming(false);
-      setGeneratingAi(false);
     }
-  }
-
-  if (generatingAi) {
-    return <RedeemGeneratingBody titleId={titleId} />;
   }
 
   return (

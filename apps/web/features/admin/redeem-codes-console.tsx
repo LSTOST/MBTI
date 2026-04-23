@@ -52,7 +52,8 @@ function statusLabel(row: Item): { text: string; className: string } {
   return { text: "发放中", className: "bg-[rgba(52,199,89,0.12)] text-[#34C759]" };
 }
 
-const fetchOpts: RequestInit = { credentials: "include" };
+/** 始终绕过 HTTP 缓存：管理端删除/编辑后必须读到最新状态 */
+const fetchOpts: RequestInit = { credentials: "include", cache: "no-store" };
 
 export function RedeemCodesConsole() {
   const [page, setPage] = useState(1);
@@ -87,6 +88,8 @@ export function RedeemCodesConsole() {
         limit: String(limit),
         q: qDebounced,
         filter: filter === "all" ? "all" : filter === "enabled" ? "enabled" : "disabled",
+        /** 时间戳兜底，彻底规避中间层缓存 */
+        _: String(Date.now()),
       });
       const res = await fetch(`/api/admin/redeem-codes?${sp}`, fetchOpts);
       const parsed = await readAdminJson<ListResponse & { error?: string }>(res);

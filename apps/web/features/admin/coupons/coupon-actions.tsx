@@ -1,7 +1,6 @@
 "use client";
 
 import { Ban, ToggleRight, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Props = {
@@ -11,8 +10,12 @@ type Props = {
   hasUses: boolean;
 };
 
+/** router.refresh() 在部分环境下不会失效本页 RSC 缓存；整页刷新确保与服务器一致 */
+function hardReload() {
+  window.location.reload();
+}
+
 export function CouponActions({ id, code, active, hasUses }: Props) {
-  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,12 +32,12 @@ export function CouponActions({ id, code, active, hasUses }: Props) {
       if (!res.ok) {
         const d = (await res.json()) as { error?: string };
         setError(d.error ?? "操作失败");
+        setBusy(false);
         return;
       }
-      router.refresh();
+      hardReload();
     } catch {
       setError("操作失败");
-    } finally {
       setBusy(false);
     }
   }
@@ -55,12 +58,12 @@ export function CouponActions({ id, code, active, hasUses }: Props) {
       if (!res.ok) {
         const d = (await res.json()) as { error?: string };
         setError(d.error ?? "删除失败");
+        setBusy(false);
         return;
       }
-      router.refresh();
+      hardReload();
     } catch {
       setError("删除失败");
-    } finally {
       setBusy(false);
     }
   }
